@@ -34,3 +34,4 @@ class GateEvent(models.Model):
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
     control = models.BooleanField(default=False, editable=False)
+    allowed = models.BooleanField(default=False, editable=False)

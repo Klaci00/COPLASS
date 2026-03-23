@@ -13,9 +13,9 @@ class CardAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'valid_from', 'valid_to')
 
 class GateEventAdmin(admin.ModelAdmin):
-    list_display = ('gate', 'card', 'timestamp', 'control')
-    search_fields = ('gate', 'card__card_number', 'card__employee__firstname', 'card__employee__lastname')
-    list_filter = ('gate', 'timestamp', 'control')
+    list_display = ('gate', 'card', 'timestamp', 'control', 'allowed')
+    search_fields = ('gate', 'card__card_number', 'card__employee__firstname', 'card__employee__lastname', 'card__employee__hr_id', 'timestamp', 'control', 'allowed')
+    list_filter = ('gate', 'timestamp', 'control', 'allowed')
 
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Card, CardAdmin)
