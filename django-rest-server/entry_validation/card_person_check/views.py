@@ -13,6 +13,7 @@ class CheckCardPersonView(APIView):
         employee = card.employee if card else None
         response = check_card_person(card, employee)
         denied = response.data.get("denied")
+        control = False
         if denied and isinstance(denied, dict):
             control = denied.get("control", False)
         if card and employee:

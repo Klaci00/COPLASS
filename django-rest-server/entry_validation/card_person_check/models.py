@@ -19,6 +19,7 @@ class Card(models.Model):
     card_number = models.CharField(max_length=20, editable=False, unique=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='related_cards')
     related_hr_id = models.CharField(max_length=50, editable=False)
+    lock_until = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.card_number = self.card_id + self.employee.hr_id
@@ -32,4 +33,4 @@ class GateEvent(models.Model):
     gate = models.IntegerField()
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
-    control = models.BooleanField(default=False)
+    control = models.BooleanField(default=False, editable=False)
