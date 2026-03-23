@@ -19,7 +19,9 @@ def check_card_person(card : Card | None, employee : Employee | None) -> Respons
     if card.lock_until and card.lock_until > timezone.now():
         return Response({"denied": "Card is temporarily locked."}, status=403)
     
-    if random.randint(0, 99) == 1:
+    if random.randint(0, 1) == 1:
+        card.lock_until = timezone.now() + timezone.timedelta(minutes=5)
+        card.save()
         return Response({"denied" : {"control" : True}}, status=403)
     
     return Response({"message": "Card and person details are valid."}, status=200)
