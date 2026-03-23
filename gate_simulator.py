@@ -14,24 +14,19 @@ def send_card_data(card_number):
     try:
         response = requests.post(SERVER_URL, json=data)
         if response.status_code == 200:
-            print(f"Opening gate for card: {card_number}")
+            print(f"{response.json().get('message', 'Access granted')} : {card_number}")
         else:
-            print(f"{response.reason}: {response.status_code}")
+            print(f"{response.json().get('denied', 'Unknown error')}: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"Error sending data: {e}")
 
-def receive_response(response):
-    if response.status_code == 200:
-        print("Opening gate...", response.json())
-    else:
-        print("Access denied:", response.json())
 def main():
     print("Security Gate Simulator")
     print("Press Enter to simulate a person passing through the gate...")
     
     while True:
         input("Press Enter to simulate...")
-        card_number = 11
+        card_number = int(input("Enter card number"))
         print(f"Read card: {card_number}")
         send_card_data(card_number)
 
