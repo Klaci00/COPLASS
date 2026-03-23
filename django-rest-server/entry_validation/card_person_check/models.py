@@ -31,7 +31,8 @@ class Card(models.Model):
     
 class GateEvent(models.Model):
     gate = models.IntegerField()
-    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField()
     control = models.BooleanField(default=False, editable=False)
     allowed = models.BooleanField(default=False, editable=False)
+    warning = models.CharField(max_length=255, null=True, blank=True, editable=False)

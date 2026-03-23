@@ -9,7 +9,9 @@ class CheckCardPersonView(APIView):
     def post(self, request):
         self.post_data = request.data
         card_number = self.post_data.get('card_number')
-        card = Card.objects.filter(card_number=card_number).first()           
+        card = Card.objects.filter(card_number=card_number).first()
+        if card is None:
+            warning = f"Foreign card!! {card_number}"           
         employee = card.employee if card else None
         response = check_card_person(card, employee)
         denied = response.data.get("denied")
@@ -17,13 +19,13 @@ class CheckCardPersonView(APIView):
         allowed = response.status_code == 200
         if denied and isinstance(denied, dict):
             control = denied.get("control", False)
-        if card and employee:
-            gate_event = GateEvent(
-                gate=self.post_data.get('gate', 0),
-                card=card,
-                timestamp=self.post_data.get('timestamp'),
-                control=control,
-                allowed=allowed
+        gate_event = GateEvent(
+            gate=self.post_data.get('gate', 0),
+            card=card,
+            timestamp=self.post_data.get('timestamp'),
+            control=control,
+            allowed=allowed,
+            warning=warning if not allowed else None
             )
-            gate_event.save()
+        gate_event.save()
         return response
