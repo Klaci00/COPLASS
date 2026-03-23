@@ -1,5 +1,6 @@
+import random
 from .models import Card, Employee
-from datetime import timezone
+from django.utils import timezone
 from rest_framework.response import Response
 
 def check_card_person(card : Card | None, employee : Employee | None) -> Response:
@@ -15,5 +16,7 @@ def check_card_person(card : Card | None, employee : Employee | None) -> Respons
     if card.valid_from > timezone.now().date() or card.valid_to < timezone.now().date():
         return Response({"error": "Card is not valid at this time."}, status=403)
     
+    if random.randint(0, 99) == 1:
+        return Response({"control" : True}, status=403)
     
     return Response({"message": "Card and person details are valid."}, status=200)

@@ -1,5 +1,5 @@
 import random
-from rest_framework import APIView
+from rest_framework.views import APIView
 from .models import Card, GateEvent
 from .check import check_card_person
 
@@ -16,7 +16,7 @@ class CheckCardPersonView(APIView):
             gate=self.post_data.get('gate', 0),
             card=card,
             timestamp=self.post_data.get('timestamp'),
-            control = True if random.randint(0, 99) == 1 else False
+            control = response.get("control", False)
         )
         gate_event.save()
         return response
