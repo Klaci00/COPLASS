@@ -7,7 +7,7 @@ class Gate:
         self.server_url = server_url
 
     def check_card(self, card_number, direction):
-        data = {'card_number': card_number, 'gate': 1, 'timestamp': datetime.now().isoformat(), 'direction': direction}
+        data = {'card_number': card_number, 'gate': self.gate, 'timestamp': datetime.now().isoformat(), 'direction': direction}
         try:
             response = requests.post(self.server_url, json=data)
             if response.status_code == 200:

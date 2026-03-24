@@ -29,20 +29,25 @@ class Card(models.Model):
 
     def __str__(self):
         return f"Card {self.card_number} for {self.employee.firstname} {self.employee.lastname}"
-    
+
+class SecurityZone(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    def __str__(self):
+        return f"{self.name}"
 class GateEvent(models.Model):
-    gate = models.IntegerField()
+    gate = models.ForeignKey('Gate', on_delete=models.CASCADE, null=True, blank=True)
     card = models.ForeignKey(Card, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField()
     control = models.BooleanField(default=False, editable=False)
     allowed = models.BooleanField(default=False, editable=False)
     warning = models.CharField(max_length=255, null=True, blank=True, editable=False)
-
-class SecurityZone(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    from_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_from_zone', null=True, blank=True)
+    to_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_to_zone', null=True, blank=True)
 
 class Gate(models.Model):
     inside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_inside')
     outside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_outside')
     gate_number = models.IntegerField()
+    def __str__(self):
+        return f"Gate {self.gate_number} between {self.outside_zone.name} and {self.inside_zone.name}"
