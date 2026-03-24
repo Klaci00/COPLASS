@@ -8,6 +8,7 @@ class Employee(models.Model):
     date_of_birth = models.DateField()
     hr_id = models.CharField(max_length=50, unique=True)
     department = models.CharField(max_length=100)
+    cards = models.ManyToManyField('Card', related_name='employees', blank=True)
     def __str__(self):
         return f"{self.firstname} {self.lastname} ({self.hr_id})"
 
@@ -36,3 +37,12 @@ class GateEvent(models.Model):
     control = models.BooleanField(default=False, editable=False)
     allowed = models.BooleanField(default=False, editable=False)
     warning = models.CharField(max_length=255, null=True, blank=True, editable=False)
+
+class SecurityZone(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+class Gate(models.Model):
+    inside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_inside')
+    outside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_outside')
+    gate_number = models.IntegerField()

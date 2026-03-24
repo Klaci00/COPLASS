@@ -1,8 +1,13 @@
 from django.contrib import admin
-from .models import Employee, Card, GateEvent
+from .models import Employee, Card, GateEvent, SecurityZone, Gate
 
 # Register your models here.
 
+class SercurityZoneAdmin(admin.ModelAdmin):
+    pass
+
+class GateAdmin(admin.ModelAdmin):
+    pass
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('firstname', 'lastname', 'hr_id', 'department')
     search_fields = ('firstname', 'lastname', 'hr_id', 'department')
@@ -20,3 +25,5 @@ class GateEventAdmin(admin.ModelAdmin):
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Card, CardAdmin)
 admin.site.register(GateEvent, GateEventAdmin)
+admin.site.register(SecurityZone, SercurityZoneAdmin)
+admin.site.register(Gate, GateAdmin)
