@@ -129,3 +129,4 @@ Thumbs.db
 # OS
 .DS_Store
 .env.local
+django-rest-server/entry_validation/db.sqlite3
