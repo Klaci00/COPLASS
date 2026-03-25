@@ -2,13 +2,21 @@ from django.db import models
 
 # Create your models here.
 
+class AccessRight(models.Model):
+    security_zone = models.ForeignKey('SecurityZone', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateField()
+    end_date = models.DateField()
+def __str__(self):
+    return f"{self.security_zone.name} ({self.start_date} → {self.end_date})"
 class Employee(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     hr_id = models.CharField(max_length=50, unique=True)
     department = models.CharField(max_length=100)
-    cards = models.ManyToManyField('Card', related_name='employees', blank=True)
+    current_zone = models.ForeignKey('SecurityZone', on_delete=models.SET_NULL, null=True, blank=True)
+    access_rights = models.ManyToManyField(AccessRight, related_name='employees', blank=True)
     def __str__(self):
         return f"{self.firstname} {self.lastname} ({self.hr_id})"
 
@@ -44,7 +52,8 @@ class GateEvent(models.Model):
     warning = models.CharField(max_length=255, null=True, blank=True, editable=False)
     from_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_from_zone', null=True, blank=True)
     to_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_to_zone', null=True, blank=True)
-
+    def __str__(self):
+        return f"Gate {self.gate.gate_number} - {self.card.card_number} at {self.timestamp}"
 class Gate(models.Model):
     inside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_inside')
     outside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_outside')
