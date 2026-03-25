@@ -7,8 +7,8 @@ class AccessRight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField()
     end_date = models.DateField()
-def __str__(self):
-    return f"{self.security_zone.name} ({self.start_date} → {self.end_date})"
+    def __str__(self):
+        return f"{self.security_zone.name} ({self.start_date} → {self.end_date})"
 class Employee(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)

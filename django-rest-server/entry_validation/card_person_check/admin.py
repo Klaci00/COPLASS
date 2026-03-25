@@ -1,16 +1,25 @@
 from django.contrib import admin
-from .models import Employee, Card, GateEvent, SecurityZone, Gate
+from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight
 
 # Register your models here.
 
+class AccessRightAdmin(admin.ModelAdmin):
+    list_display = ('security_zone', 'start_date', 'end_date')
+    search_fields = ('security_zone__name', 'start_date', 'end_date')
+    list_filter = ('security_zone', 'start_date', 'end_date')
 class SercurityZoneAdmin(admin.ModelAdmin):
     pass
 
 class GateAdmin(admin.ModelAdmin):
     pass
+
+class CardInline(admin.TabularInline):
+    model = Card
+    extra = 0
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('firstname', 'lastname', 'hr_id', 'department')
     search_fields = ('firstname', 'lastname', 'hr_id', 'department')
+    inlines = [CardInline]
 
 class CardAdmin(admin.ModelAdmin):
     list_display = ('card_number', 'employee', 'is_active', 'valid_from', 'valid_to')
@@ -27,3 +36,4 @@ admin.site.register(Card, CardAdmin)
 admin.site.register(GateEvent, GateEventAdmin)
 admin.site.register(SecurityZone, SercurityZoneAdmin)
 admin.site.register(Gate, GateAdmin)
+admin.site.register(AccessRight, AccessRightAdmin)
