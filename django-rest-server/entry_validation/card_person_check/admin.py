@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight
+from django.db import models
+from django import forms
 
 # Register your models here.
 
@@ -16,10 +18,15 @@ class GateAdmin(admin.ModelAdmin):
 class CardInline(admin.TabularInline):
     model = Card
     extra = 0
+
+class AccessRightInline(admin.TabularInline):
+    model = AccessRight
+    extra = 0
+
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('firstname', 'lastname', 'hr_id', 'department')
     search_fields = ('firstname', 'lastname', 'hr_id', 'department')
-    inlines = [CardInline]
+    inlines = [CardInline, AccessRightInline]
 
 class CardAdmin(admin.ModelAdmin):
     list_display = ('card_number', 'employee', 'is_active', 'valid_from', 'valid_to')
