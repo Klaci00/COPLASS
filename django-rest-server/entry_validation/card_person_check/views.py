@@ -1,7 +1,12 @@
-from rest_framework.views import APIView
-from .models import Card, GateEvent, Gate
+from rest_framework.views import APIView, Response
+from .models import Card, GateEvent, Gate, AccessRightRequest
 from .check import check_card_person
-
+from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 # Create your views here.
 
 class CheckCardPersonView(APIView):
@@ -37,3 +42,43 @@ class CheckCardPersonView(APIView):
         employee.save()
         gate_event.save()
         return response
+
+def AccessRightRequestView(APIView):
+    def post(self, request):
+        data = request.data
+        security_zone = data.get('security_zone')
+        created_at =data.get('created_at')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        employee = data.get('employee')
+        access_request = AccessRightRequest(
+            security_zone=security_zone,
+            created_at=created_at,
+            start_date=start_date,
+            end_date=end_date,
+            employee=employee,
+            approved=False
+        )
+        access_request.save()
+        return Response({"message": "Access right request created successfully."}, status=201)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny]) # Allows anyone to access the login page
+def login_view(request):
+    # Extract username and password from the Vue JSON request
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    # Django's built-in authenticate function checks if the credentials are correct
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        # Get the existing token for the user, or create a new one if it doesn't exist
+        token, created = Token.objects.get_or_create(user=user)
+        
+        # Return the token in the exact JSON format the Vue frontend expects
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
+    else:
+        # Return an error status which will trigger the 'catch' block in Vue
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
