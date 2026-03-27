@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import CheckCardPersonView, login_view
+from .views import CheckCardPersonView, login_view, SecutityZoneListView, EmployeeListView,AccessRightRequestView
 
 urlpatterns = [ path("check_card_person/", CheckCardPersonView.as_view()),
                path("login/", login_view, name="api-login"),
+               path("security_zones/", SecutityZoneListView.as_view(), name="api-security-zones"),
+               path("employees/", EmployeeListView.as_view(), name="api-employees"),
+               path("access_right_requests/", AccessRightRequestView.as_view(), name="api-access-right-requests"),
 ]

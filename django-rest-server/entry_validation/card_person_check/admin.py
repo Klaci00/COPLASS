@@ -1,10 +1,14 @@
 from django.contrib import admin
-from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight
+from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight, AccessRightRequest
 from django.db import models
 from django import forms
 
 # Register your models here.
 
+class AccessRightRequestAdmin(admin.ModelAdmin):
+    list_display = ('security_zone', 'employee', 'start_date', 'end_date', 'approved')
+    search_fields = ('security_zone__name', 'employee__firstname', 'employee__lastname', 'employee__hr_id')
+    list_filter = ('security_zone', 'start_date', 'end_date', 'approved')
 class AccessRightAdmin(admin.ModelAdmin):
     list_display = ('security_zone', 'start_date', 'end_date')
     search_fields = ('security_zone__name', 'start_date', 'end_date')
@@ -44,3 +48,4 @@ admin.site.register(GateEvent, GateEventAdmin)
 admin.site.register(SecurityZone, SercurityZoneAdmin)
 admin.site.register(Gate, GateAdmin)
 admin.site.register(AccessRight, AccessRightAdmin)
+admin.site.register(AccessRightRequest, AccessRightRequestAdmin)

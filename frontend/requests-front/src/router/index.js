@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import DashBoardView from '../views/DashboardView.vue' 
+import AccessRightRequestPost from '../views/AccessRightRequestPost.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashBoardView
+    },
+    {
+      path: '/access-right-requests',
+      name: 'access-right-requests',
+      component: AccessRightRequestPost
     }
     // ... your other routes
   ]

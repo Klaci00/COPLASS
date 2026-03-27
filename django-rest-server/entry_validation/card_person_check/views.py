@@ -1,5 +1,5 @@
 from rest_framework.views import APIView, Response
-from .models import Card, GateEvent, Gate, AccessRightRequest
+from .models import Card, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee
 from .check import check_card_person
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, permission_classes
@@ -43,7 +43,7 @@ class CheckCardPersonView(APIView):
         gate_event.save()
         return response
 
-def AccessRightRequestView(APIView):
+class AccessRightRequestView(APIView):
     def post(self, request):
         data = request.data
         security_zone = data.get('security_zone')
@@ -52,16 +52,27 @@ def AccessRightRequestView(APIView):
         end_date = data.get('end_date')
         employee = data.get('employee')
         access_request = AccessRightRequest(
-            security_zone=security_zone,
+            security_zone=SecurityZone.objects.get(id=security_zone),
             created_at=created_at,
             start_date=start_date,
             end_date=end_date,
-            employee=employee,
+            employee=Employee.objects.get(id=employee),
             approved=False
         )
         access_request.save()
         return Response({"message": "Access right request created successfully."}, status=201)
 
+class SecutityZoneListView(APIView):
+    def get(self, request):
+        security_zones = SecurityZone.objects.all()
+        data = [{"id": zone.id, "name": zone.name} for zone in security_zones]
+        return Response(data)
+
+class EmployeeListView(APIView):
+    def get(self, request):
+        employees = Employee.objects.all()
+        data = [{"id": emp.id, "name": emp.firstname + " " + emp.lastname} for emp in employees]
+        return Response(data)
 
 @api_view(['POST'])
 @permission_classes([AllowAny]) # Allows anyone to access the login page
