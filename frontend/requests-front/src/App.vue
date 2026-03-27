@@ -6,6 +6,7 @@
       <router-link to="/login">Login</router-link>
       <router-link to="/dashboard">Dashboard</router-link>
       <router-link to="/access-right-requests">Access Right Requests</router-link>
+      <router-link to="/register_employee">Register</router-link>
     </nav>
 
     <!-- The current page content will render below the navigation -->

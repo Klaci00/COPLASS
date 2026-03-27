@@ -60,7 +60,10 @@ class AccessRightRequestView(APIView):
             approved=False
         )
         access_request.save()
-        return Response({"message": "Access right request created successfully."}, status=201)
+        try:
+            return Response({"message": "Access right request created successfully."}, status=201)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
 
 class SecutityZoneListView(APIView):
     def get(self, request):
@@ -84,7 +87,7 @@ def login_view(request):
     # Django's built-in authenticate function checks if the credentials are correct
     user = authenticate(username=username, password=password)
 
-    if user is not None:
+    if user is not None and user.is_active:
         # Get the existing token for the user, or create a new one if it doesn't exist
         token, created = Token.objects.get_or_create(user=user)
         
@@ -93,3 +96,26 @@ def login_view(request):
     else:
         # Return an error status which will trigger the 'catch' block in Vue
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class RegisterEmployee(APIView):
+    def post(self, request):
+        data = request.data
+        firstname = data.get('firstname')
+        lastname = data.get('lastname')
+        date_of_birth = data.get('date_of_birth')
+        hr_id = Employee.objects.last().hr_id + 1 if Employee.objects.exists() else 1
+        department = data.get('department')
+        password = data.get('password')
+        employee = Employee.objects.create_user(
+            hr_id=hr_id,
+            password=password,
+            firstname=firstname,
+            lastname=lastname,
+            date_of_birth=date_of_birth,
+            department=department
+        )
+        employee.save()
+        try:
+            return Response({"message": "Employee registered successfully."}, status=201)
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)

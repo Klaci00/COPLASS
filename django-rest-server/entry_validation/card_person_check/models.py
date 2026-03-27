@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 # Create your models here.
 
@@ -20,14 +21,38 @@ class AccessRightRequest(models.Model):
     approved = models.BooleanField(default=False)
     def __str__(self):
         return f"Request: {self.employee.firstname} {self.employee.lastname} - {self.security_zone.name} ({self.start_date} → {self.end_date}) - {'Approved' if self.approved else 'Pending'}"
-class Employee(models.Model):
+
+class EmployeeManager(BaseUserManager):
+    def create_user(self, hr_id, password=None, **extra_fields):
+        if not hr_id:
+            raise ValueError('The HR ID must be set')
+        user = self.model(hr_id=hr_id, **extra_fields)
+        user.set_password(password) # Hashes the password securely
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, hr_id, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(hr_id, password, **extra_fields)
+
+class Employee(AbstractBaseUser, PermissionsMixin):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     date_of_birth = models.DateField()
-    hr_id = models.CharField(max_length=50, unique=True)
+    hr_id = models.IntegerField(unique=True)
     department = models.CharField(max_length=100)
     current_zone = models.ForeignKey('SecurityZone', on_delete=models.SET_NULL, null=True, blank=True)
-    access_rights = models.ManyToOneRel(to=AccessRight, field='employee', field_name='employee', related_name='employee_access_rights')
+    access_rights = models.ManyToOneRel(
+        to=AccessRight, field='employee',field_name='employee', related_name='employee_access_rights')
+    # Required for Django Admin and Authentication
+    is_active = models.BooleanField(default=False)
+    is_supervisor = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    objects = EmployeeManager()
+    # Tells Django to use hr_id instead of a username for login
+    USERNAME_FIELD = 'hr_id'
+    REQUIRED_FIELDS = ['firstname', 'lastname', 'date_of_birth']
     def __str__(self):
         return f"{self.firstname} {self.lastname} ({self.hr_id})"
 

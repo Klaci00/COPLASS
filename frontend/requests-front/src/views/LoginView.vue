@@ -3,7 +3,7 @@
     <h2>Login to Django</h2>
     <form @submit.prevent="handleLogin">
       <div>
-        <label>Username: </label>
+        <label>HR-ID: </label>
         <input v-model="username" type="text" required />
       </div>
       <div>
