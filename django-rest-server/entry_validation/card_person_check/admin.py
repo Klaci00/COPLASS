@@ -1,10 +1,13 @@
 from django.contrib import admin
-from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight, AccessRightRequest
-from django.db import models
-from django import forms
+from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight, AccessRightRequest, Message
+
 
 # Register your models here.
 
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'content', 'is_read', 'created_at')
+    search_fields = ('employee__firstname', 'employee__lastname', 'employee__hr_id', 'content')
+    list_filter = ('is_read', 'created_at')
 class AccessRightRequestAdmin(admin.ModelAdmin):
     list_display = ('security_zone', 'employee', 'start_date', 'end_date', 'approved')
     search_fields = ('security_zone__name', 'employee__firstname', 'employee__lastname', 'employee__hr_id')
@@ -49,3 +52,4 @@ admin.site.register(SecurityZone, SercurityZoneAdmin)
 admin.site.register(Gate, GateAdmin)
 admin.site.register(AccessRight, AccessRightAdmin)
 admin.site.register(AccessRightRequest, AccessRightRequestAdmin)
+admin.site.register(Message, MessageAdmin)

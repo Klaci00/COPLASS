@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import DashBoardView from '../views/DashboardView.vue' 
+import DashBoardView from '../views/DashBoardView.vue' 
 import AccessRightRequestPost from '../views/AccessRightRequestPost.vue'
 import RegisterView from '../views/RegisterView.vue'
+import MessagesView from '@/views/MessagesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/register_employee',
       name: 'register_employee',
       component: RegisterView
+    },
+    {
+      path: '/messages',
+      name: 'messages',
+      component: MessagesView
     }
     // ... your other routes
   ]

@@ -56,6 +56,13 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.firstname} {self.lastname} ({self.hr_id})"
 
+class Message(models.Model):
+    is_read = models.BooleanField(default=False)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='messages_for_employee', null=True, blank=True)
+    def __str__(self):
+        return f"Message for {self.employee.firstname} {self.employee.lastname} at {self.created_at}"
 class Card(models.Model):
     is_active = models.BooleanField(default=False)
     valid_from = models.DateField()

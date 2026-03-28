@@ -3,21 +3,20 @@
     <!-- Global Navigation Bar -->
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/login">Login</router-link>
+      <router-link v-if="!isLoggedIn" to="/login">Login</router-link>
       <router-link to="/dashboard">Dashboard</router-link>
       <router-link to="/access-right-requests">Access Right Requests</router-link>
-      <router-link to="/register_employee">Register</router-link>
-    </nav>
-
-    <!-- The current page content will render below the navigation -->
-    <main>
+      <router-link v-if="isLoggedIn" to="/messages">Messages</router-link>
+      <router-link v-else to="/register_employee">Register</router-link>
       <router-view />
-    </main>
+    </nav>
   </div>
 </template>
 
 <script setup>
-// No JavaScript needed here just for navigation links
+import { computed } from 'vue';
+
+const isLoggedIn = computed(() => localStorage.getItem('is_logged_in'));
 </script>
 
 <style>

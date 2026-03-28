@@ -46,6 +46,8 @@ const handleLogin = async () => {
     
     // Save the authentication token to the browser's local storage
     localStorage.setItem('token', data.token)
+    localStorage.setItem('HR-ID', username.value)
+    localStorage.setItem('is_logged_in', true)
     
     // Redirect the user to a secure dashboard page after successful login
     router.push('/dashboard')

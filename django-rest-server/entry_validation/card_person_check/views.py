@@ -1,5 +1,5 @@
 from rest_framework.views import APIView, Response
-from .models import Card, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee
+from .models import Card, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee, Message
 from .check import check_card_person
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, permission_classes
@@ -115,7 +115,26 @@ class RegisterEmployee(APIView):
             department=department
         )
         employee.save()
+        message = Message.objects.create(
+            employee=employee,
+            content=f"Welcome {employee.firstname}! Your employee account has been created successfully. Your HR ID is {employee.hr_id}. Please contact your administrator to activate your account and assign access rights."
+        )
+        message.save()
+
         try:
             return Response({"message": "Employee registered successfully."}, status=201)
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+
+class MessageListView(APIView):
+    def get(self, request):
+        messages = Message.objects.filter(employee_id=request.query_params.get('employee_id')).order_by('-created_at')
+        data = [{"id": msg.id, "content": msg.content, "is_read": msg.is_read, "created_at": msg.created_at} for msg in messages]
+        return Response(data)
+    def post(self, request):
+        is_read = request.data.get('is_read', False)
+        message = Message.objects.filter(id=request.data.get('id')).first()
+        if message:
+            message.is_read = is_read
+            message.save()
+            return Response({"message": "Message updated successfully."}, status=200)
