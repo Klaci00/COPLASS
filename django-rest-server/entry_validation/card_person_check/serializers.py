@@ -7,7 +7,7 @@ from .models import Card, Gate, AccessRightRequest, SecurityZone, Employee, Mess
 # ──────────────────────────────────────────────
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    username = serializers.IntegerField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
 

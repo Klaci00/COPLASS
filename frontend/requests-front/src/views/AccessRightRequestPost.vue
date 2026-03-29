@@ -26,10 +26,9 @@
         <input type="date" v-model="formData.end_date" required />
       </div>
 
-      <!-- Employee Dropdown (Optional/Nullable in Django) -->
       <div class="form-group">
-        <label>Employee (Optional):</label>
-        <select v-model="formData.employee">
+        <label>Employee*:</label>
+        <select v-model="formData.employee" required>
           <option :value="null">-- No Employee Assigned --</option>
           <option v-for="emp in employees" :key="emp.id" :value="emp.id">
             {{ emp.name || `Employee #${emp.id}` }}

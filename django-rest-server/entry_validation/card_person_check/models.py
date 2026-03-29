@@ -40,6 +40,7 @@ class EmployeeManager(BaseUserManager):
     def create_superuser(self, hr_id, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
         return self.create_user(hr_id, password, **extra_fields)
 
 class Employee(AbstractBaseUser, PermissionsMixin):

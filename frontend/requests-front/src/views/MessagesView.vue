@@ -25,26 +25,23 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useApi } from '../composables/useApi'
 
+const { get, post } = useApi()
 const messages = ref([])
 const isLoading = ref(true)
 const error = ref('')
 
-// Fetch messages when the component loads
 onMounted(async () => {
   const hrId = localStorage.getItem('HR-ID')
-  
   if (!hrId) {
-    error.value = "You must be logged in to view messages."
+    error.value = 'You must be logged in to view messages.'
     isLoading.value = false
     return
   }
-
   try {
-    // Pass the employee_id as a URL query parameter for the GET request
-    const response = await fetch(`http://127.0.0.1:8000/api/messages/?employee_id=${hrId}`)
-    if (!response.ok) throw new Error('Failed to fetch messages')
-    
+    const response = await get(`/messages/?employee_id=${hrId}`)
+    if (!response.ok) throw new Error('Failed to fetch messages.')
     messages.value = await response.json()
   } catch (err) {
     error.value = err.message
@@ -53,32 +50,16 @@ onMounted(async () => {
   }
 })
 
-// Mark message as read when clicked
 const markAsRead = async (msg) => {
-  // If it's already read, do nothing
   if (msg.is_read) return
-
   try {
-    // Send the POST request to update the status
-    const response = await fetch('http://127.0.0.1:8000/api/messages/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: msg.id,
-        is_read: true
-      })
-    })
-
-    if (!response.ok) throw new Error('Failed to update message')
-
-    // Instantly update the UI so the user sees it as read without refreshing
+    // ✅ Pass only the data payload — the composable handles the rest
+    const response = await post('/messages/', { id: msg.id, is_read: true })
+    if (!response.ok) throw new Error('Failed to update message.')
     msg.is_read = true
-    
   } catch (err) {
-    console.error("Error updating message:", err)
-    alert("Could not mark message as read.")
+    // ✅ No alert() — surface the error in the template instead
+    error.value = err.message
   }
 }
 </script>

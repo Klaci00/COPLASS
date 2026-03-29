@@ -15,6 +15,7 @@ const router = useRouter()
 const handleLogout = () => {
   // 1. Remove the token from local storage
   localStorage.removeItem('token')
+  localStorage.removeItem('is_logged_in')
   
   // 2. Redirect the user back to the login page
   router.push('/login')

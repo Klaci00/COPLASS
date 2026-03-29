@@ -3,7 +3,7 @@ from .models import Card, GateEvent, Gate, AccessRightRequest, SecurityZone, Emp
 from .check import check_card_person
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -53,6 +53,7 @@ class CheckCardPersonView(APIView):
 
 
 class AccessRightRequestView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = AccessRightRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -62,12 +63,14 @@ class AccessRightRequestView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
-class SecurityZoneListView(APIView):        # fixed typo too
+class SecurityZoneListView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         zones = SecurityZone.objects.all()
         return Response(SecurityZoneSerializer(zones, many=True).data)
 
 class EmployeeListView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         employees = Employee.objects.all()
         return Response(EmployeeListSerializer(employees, many=True).data)
@@ -111,6 +114,7 @@ class RegisterEmployee(APIView):
             return Response({"error": str(e)}, status=400)
 
 class MessageListView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         messages = Message.objects.filter(
             employee_id=request.query_params.get('employee_id')
