@@ -8,19 +8,25 @@ class AccessRight(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='access_rights_for_employee', null=True, blank=True)
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE,
+                              related_name='access_rights_for_employee')
     def __str__(self):
-        return f"{self.employee.firstname} {self.employee.lastname} - {self.security_zone.name} ({self.start_date} → {self.end_date})"
+        emp = f"{self.employee.firstname} {self.employee.lastname}" if self.employee else "Unknown Employee"
+        zone = self.security_zone.name if self.security_zone else "Unknown Zone"
+        return f"{emp} - {zone} ({self.start_date} → {self.end_date})"
 
 class AccessRightRequest(models.Model):
     security_zone = models.ForeignKey('SecurityZone', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='access_right_requests_for_employee', null=True, blank=True)
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE,
+                              related_name='access_right_requests_for_employee')
     approved = models.BooleanField(default=False)
     def __str__(self):
-        return f"Request: {self.employee.firstname} {self.employee.lastname} - {self.security_zone.name} ({self.start_date} → {self.end_date}) - {'Approved' if self.approved else 'Pending'}"
+        emp = f"{self.employee.firstname} {self.employee.lastname}" if self.employee else "Unknown Employee"
+        zone = self.security_zone.name if self.security_zone else "Unknown Zone"
+        return f"Request: {emp} - {zone} ({self.start_date} → {self.end_date}) - {'Approved' if self.approved else 'Pending'}"
 
 class EmployeeManager(BaseUserManager):
     def create_user(self, hr_id, password=None, **extra_fields):
@@ -43,8 +49,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     hr_id = models.IntegerField(unique=True)
     department = models.CharField(max_length=100)
     current_zone = models.ForeignKey('SecurityZone', on_delete=models.SET_NULL, null=True, blank=True)
-    access_rights = models.ManyToOneRel(
-        to=AccessRight, field='employee',field_name='employee', related_name='employee_access_rights')
     # Required for Django Admin and Authentication
     is_active = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
@@ -62,7 +66,8 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='messages_for_employee', null=True, blank=True)
     def __str__(self):
-        return f"Message for {self.employee.firstname} {self.employee.lastname} at {self.created_at}"
+        emp = f"{self.employee.firstname} {self.employee.lastname}" if self.employee else "Unknown Employee"
+        return f"Message for {emp} at {self.created_at}"
 class Card(models.Model):
     is_active = models.BooleanField(default=False)
     valid_from = models.DateField()
@@ -74,8 +79,8 @@ class Card(models.Model):
     lock_until = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        self.card_number = self.card_id + self.employee.hr_id
-        self.related_hr_id = self.employee.hr_id
+        self.card_number = self.card_id + str(self.employee.hr_id)
+        self.related_hr_id = str(self.employee.hr_id)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -96,7 +101,9 @@ class GateEvent(models.Model):
     from_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_from_zone', null=True, blank=True)
     to_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_to_zone', null=True, blank=True)
     def __str__(self):
-        return f"Gate {self.gate.gate_number} - {self.card.card_number} at {self.timestamp}"
+        gate = self.gate.gate_number if self.gate else "N/A"
+        card = self.card.card_number if self.card else "N/A"
+        return f"Gate {gate} - {card} at {self.timestamp}"
 class Gate(models.Model):
     inside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_inside')
     outside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_outside')
