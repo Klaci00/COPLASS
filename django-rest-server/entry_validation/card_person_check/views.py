@@ -26,31 +26,27 @@ class CheckCardPersonView(APIView):
         employee = card.employee if card else None
         gate_obj = Gate.objects.filter(gate_number=data['gate']).first()
         direction = data['direction']
+        result = check_card_person(card, employee, gate_obj, direction)
 
-        response = check_card_person(card, employee, gate_obj, direction)
-
-        if card is None:
-            warning = f"Foreign card!! {data['card_number']}"
+        if not result.allowed:
+            denied_payload = {"control": True} if result.control else result.message
+            response = Response({"denied": denied_payload}, status=result.status_code)
         else:
-            warning = response.data.get("denied") if response.status_code != 200 else None
-        denied  = response.data.get("denied")
-        control = denied.get("control", False) if denied and isinstance(denied, dict) else False
-        allowed = response.status_code == 200
-
+            response = Response({"message": "Access granted."}, status=200)
         gate_event = GateEvent(
             gate=gate_obj,
             card=card,
             timestamp=data['timestamp'],
-            control=control,
-            allowed=allowed,
-            warning=warning,
+            control=result.control,
+            allowed=result.allowed,
+            warning=result.message if not result.allowed else None,
             from_zone=gate_obj.outside_zone if direction == 0 else gate_obj.inside_zone,
             to_zone=gate_obj.inside_zone   if direction == 0 else gate_obj.outside_zone,
         )
         gate_event.save()
 
         if employee:
-            employee.current_zone = gate_event.to_zone if allowed else employee.current_zone
+            employee.current_zone = gate_event.to_zone if result.allowed else employee.current_zone
             employee.save()
 
         return response
