@@ -49,7 +49,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-
+import { useApi } from '../composables/useApi'
+const { get, post } = useApi()
 // 1. Reactive state for our dropdown data
 const securityZones = ref([])
 const employees = ref([])
@@ -67,21 +68,12 @@ const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
 
-// 4. Helper to get Auth Token for our requests
-const getHeaders = () => {
-  const token = localStorage.getItem('token')
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Token ${token}`
-  }
-}
-
 // 5. Fetch dropdown options when the component loads
 onMounted(async () => {
   try {
     const [zoneRes, empRes] = await Promise.all([
-      fetch('http://127.0.0.1:8000/api/security_zones/', { headers: getHeaders() }),
-      fetch('http://127.0.0.1:8000/api/employees/', { headers: getHeaders() })
+      get('/security_zones/'),
+      get('/employees/')
     ])
     
     // Note: If you are using Django Rest Framework Pagination, you may need to map 
@@ -100,11 +92,8 @@ const submitRequest = async () => {
   submitSuccess.value = false
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/access_right_requests/', {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(formData.value) // Vue automatically matches the Django fields
-    })
+    const response = await post('/access_right_requests/',formData.value // Vue automatically matches the Django fields
+    )
 
     if (!response.ok) {
       const errorData = await response.json()
