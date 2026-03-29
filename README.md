@@ -1,6 +1,6 @@
-# COPLASS - Security Gate Access System
+# COPLASS - Complex Plant Security Solutions 
 
-A full-stack application that simulates a security gate system with card-based access control. It includes a Django REST API backend for validating entries, a Vue.js frontend for user interactions, and Python scripts for simulating gate operations.
+A full-stack application that handles a security gate system with card-based access control, site access control, vehicle access control, employee data control, randomised checks, work permits, health evaluation documentation for employees and many more functions in the future. It includes a Django REST API backend for validating entries, a Vue.js frontend for user interactions, and Python scripts for simulating gate operations.
 
 ## Features
 
