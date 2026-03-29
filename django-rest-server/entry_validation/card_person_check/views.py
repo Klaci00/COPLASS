@@ -15,6 +15,7 @@ from .serializers import (CheckCardPersonSerializer,
                           MessageSerializer,
                           MessageUpdateSerializer
                           )
+from django.db import models
 
 class CheckCardPersonView(APIView):
     def post(self, request):
@@ -65,12 +66,42 @@ class AccessRightRequestView(APIView):
 
 class AccessRightRequestListView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        if request.user.is_staff:
-            requests = AccessRightRequest.objects.filter(supervisor=request.user).order_by('-created_at')
+        user = request.user
+        if user.is_staff:
+            # Supervisor sees requests assigned to them + their own requests
+            requests = AccessRightRequest.objects.filter(
+                models.Q(supervisor=user) | models.Q(employee=user)
+            ).distinct().order_by('-created_at')
         else:
-            return Response({"error": "You do not have permission to view access right requests."}, status=403)
+            # Regular employee sees only their own requests
+            requests = AccessRightRequest.objects.filter(
+                employee=user
+            ).order_by('-created_at')
+
         return Response(AccessRightRequestSerializer(requests, many=True).data)
+
+
+class ApproveAccessRightRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        if not request.user.is_staff:
+            return Response({"error": "Permission denied."}, status=403)
+
+        access_request = AccessRightRequest.objects.filter(pk=pk).first()
+        if not access_request:
+            return Response({"error": "Request not found."}, status=404)
+        if access_request.approved:
+            return Response({"error": "Already approved."}, status=400)
+
+        # Ensure the supervisor can only approve requests assigned to them
+        if access_request.supervisor != request.user:
+            return Response({"error": "You are not the supervisor for this request."}, status=403)
+
+        access_request.approve()
+        return Response({"message": "Request approved successfully."}, status=200)
 
 class SecurityZoneListView(APIView):
     permission_classes = [IsAuthenticated]

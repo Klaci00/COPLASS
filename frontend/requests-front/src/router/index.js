@@ -4,6 +4,7 @@ import DashBoardView from '../views/DashBoardView.vue'
 import AccessRightRequestPost from '../views/AccessRightRequestPost.vue'
 import RegisterView from '../views/RegisterView.vue'
 import MessagesView from '../views/MessagesView.vue'
+import AccessRightRequestList from '../views/AccessRightRequestList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,7 +29,13 @@ const router = createRouter({
       name: 'messages',
       component: MessagesView,
       meta: { requiresAuth: true }
-    }
+    },
+    {
+    path: '/access-right-requests/list',
+    name: 'access-right-requests-list',
+    component: AccessRightRequestList,
+    meta: { requiresAuth: true }
+}
   ]
 })
 

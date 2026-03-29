@@ -7,6 +7,7 @@
         <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
           <router-link to="/access-right-requests">Access Requests</router-link>
+          <router-link to="/access-right-requests/list">Request List</router-link>
           <router-link to="/messages">
             Messages
             <span v-if="unreadCount > 0" class="badge">{{ unreadCount }}</span>

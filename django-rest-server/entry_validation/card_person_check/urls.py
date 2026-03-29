@@ -1,12 +1,13 @@
 from django.urls import path
-from .views import CheckCardPersonView, login_view, SecurityZoneListView, EmployeeListView,AccessRightRequestView, AccessRightRequestListView, RegisterEmployee, MessageListView
+from .views import ApproveAccessRightRequestView, CheckCardPersonView, login_view, SecurityZoneListView, EmployeeListView,AccessRightRequestView, AccessRightRequestListView, RegisterEmployee, MessageListView
 
 urlpatterns = [ path("check_card_person/", CheckCardPersonView.as_view()),
-               path("login/", login_view, name="api-login"),
-               path("security_zones/", SecurityZoneListView.as_view(), name="api-security-zones"),
-               path("employees/", EmployeeListView.as_view(), name="api-employees"),
-               path("access_right_requests/", AccessRightRequestView.as_view(), name="api-access-right-requests"),
-               path("access_right_requests/list/", AccessRightRequestListView.as_view(), name="api-access-right-requests-list"),
-               path("register_employee/", RegisterEmployee.as_view(), name="api-register-employee"),
+                path("login/", login_view, name="api-login"),
+                path("security_zones/", SecurityZoneListView.as_view(), name="api-security-zones"),
+                path("employees/", EmployeeListView.as_view(), name="api-employees"),
+                path("access_right_requests/", AccessRightRequestView.as_view(), name="api-access-right-requests"),
+                path('access-right-requests/', AccessRightRequestListView.as_view()),
+                path('access-right-requests/<int:pk>/approve/', ApproveAccessRightRequestView.as_view()),
+                path("register_employee/", RegisterEmployee.as_view(), name="api-register-employee"),
                 path("messages/", MessageListView.as_view(), name="api-messages"),  
 ]

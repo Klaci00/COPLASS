@@ -36,31 +36,29 @@ class CheckCardPersonSerializer(serializers.Serializer):
 # Access right requests
 # ──────────────────────────────────────────────
 
-class AccessRightRequestSerializer(serializers.Serializer):
-    security_zone = serializers.PrimaryKeyRelatedField(
-        queryset=SecurityZone.objects.all()
-    )
-    supervisor      = serializers.PrimaryKeyRelatedField(
-        queryset=Employee.objects.all()
-    )
-    employee      = serializers.PrimaryKeyRelatedField(
-        queryset=Employee.objects.all()
-    )
-    created_at    = serializers.DateTimeField(required=False)
-    start_date    = serializers.DateField(required=True)
-    end_date      = serializers.DateField(required=True)
+class AccessRightRequestSerializer(serializers.ModelSerializer):
+    employee_name = serializers.SerializerMethodField()
+    supervisor_name = serializers.SerializerMethodField()
+    zone_name = serializers.SerializerMethodField()
 
-    def validate(self, data):
-        if data['start_date'] > data['end_date']:
-            raise serializers.ValidationError("start_date must be before end_date.")
-        return data
+    class Meta:
+        model = AccessRightRequest
+        fields = [
+            'id', 'employee', 'employee_name',
+            'supervisor', 'supervisor_name',
+            'security_zone', 'zone_name',
+            'start_date', 'end_date',
+            'created_at', 'approved'
+        ]
 
-    def create(self, validated_data):
-        return AccessRightRequest.objects.create(
-            **validated_data,
-            approved=False
-        )
+    def get_employee_name(self, obj):
+        return f"{obj.employee.firstname} {obj.employee.lastname}" if obj.employee else None
 
+    def get_supervisor_name(self, obj):
+        return f"{obj.supervisor.firstname} {obj.supervisor.lastname}" if obj.supervisor else None
+
+    def get_zone_name(self, obj):
+        return obj.security_zone.name if obj.security_zone else None
 
 # ──────────────────────────────────────────────
 # Security zones
