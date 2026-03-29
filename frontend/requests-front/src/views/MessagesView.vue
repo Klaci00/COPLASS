@@ -26,14 +26,16 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
+import { useAuthStore } from '../stores/auth'
 
+const auth = useAuthStore()
 const { get, post } = useApi()
 const messages = ref([])
 const isLoading = ref(true)
 const error = ref('')
 
 onMounted(async () => {
-  const hrId = localStorage.getItem('HR-ID')
+  const hrId = auth.hr_id
   if (!hrId) {
     error.value = 'You must be logged in to view messages.'
     isLoading.value = false
