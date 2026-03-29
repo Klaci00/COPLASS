@@ -90,7 +90,7 @@ def login_view(request):
         token, created = Token.objects.get_or_create(user=user)
         
         # Return the token in the exact JSON format the Vue frontend expects
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'token': token.key, 'is_staff': user.is_staff, 'user_name': f"{user.firstname} {user.lastname}", 'hr_id': username}, status=status.HTTP_200_OK)
     else:
         # Return an error status which will trigger the 'catch' block in Vue
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

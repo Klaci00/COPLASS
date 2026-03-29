@@ -80,6 +80,12 @@ onMounted(async () => {
     // `await zoneRes.json().then(data => data.results)` instead
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
+    const is_staff = localStorage.getItem('is_staff') === 'true'
+    if (!is_staff) {
+      // If the user is not staff, filter the employees to only include themselves
+      const hrId = localStorage.getItem('HR-ID')
+      employees.value = employees.value.filter(emp => emp.id.toString() === hrId)
+    }
   } catch (error) {
     console.error('Failed to load dropdown data:', error)
   }

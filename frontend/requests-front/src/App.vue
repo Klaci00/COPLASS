@@ -2,6 +2,7 @@
   <div id="app">
     <nav class="navbar">
       <span class="navbar-brand">🔐 AccessControl</span>
+      <span class="navbar-brand">{{`Welcome, ${auth.display_name}!`}}</span>
       <div class="navbar-links">
         <template v-if="isLoggedIn">
           <router-link to="/dashboard">Dashboard</router-link>
@@ -10,7 +11,7 @@
             Messages
             <span v-if="unreadCount > 0" class="badge">{{ unreadCount }}</span>
           </router-link>
-          <button class="btn-logout" @click="handleLogout">Logout</button>
+          <button class="btn-logout" @click="auth.logout(); router.push('/login')">Logout</button>
         </template>
         <template v-else>
           <router-link to="/login">Login</router-link>
@@ -29,16 +30,17 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApi } from './composables/useApi'
+import { useAuthStore } from './stores/auth'
 
+const auth = useAuthStore()
 const router = useRouter()
 const { get } = useApi()
 const unreadCount = ref(0)
-
 const isLoggedIn = computed(() => !!localStorage.getItem('token'))
 
 const fetchUnreadCount = async () => {
   if (!isLoggedIn.value) return
-  const hrId = localStorage.getItem('HR-ID')
+  const hrId = auth.hr_id
   try {
     const res = await get(`/messages/?employee_id=${hrId}`)
     if (res.ok) {
@@ -48,14 +50,8 @@ const fetchUnreadCount = async () => {
   } catch {}
 }
 
-const handleLogout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('HR-ID')
-  localStorage.removeItem('is_logged_in')
-  router.push('/login')
-}
-
 onMounted(fetchUnreadCount)
+
 </script>
 
 <style>

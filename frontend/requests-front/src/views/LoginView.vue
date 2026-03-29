@@ -5,8 +5,8 @@
 
     <form @submit.prevent="handleLogin">
       <div class="form-group">
-        <label for="hr-id">HR ID</label>
-        <input id="hr-id" v-model="username" type="text"
+        <label for="username">HR ID</label>
+        <input id="username" v-model="username" type="text"
                placeholder="e.g. 1042" required autocomplete="username" />
       </div>
       <div class="form-group">
@@ -30,7 +30,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApi } from '../composables/useApi'
+import { useAuthStore } from '../stores/auth'
 
+const auth = useAuthStore()
 const { post } = useApi()
 const router = useRouter()
 const username = ref('')
@@ -43,11 +45,10 @@ const handleLogin = async () => {
   errorMessage.value = ''
   try {
     const response = await post('/login/', { username: username.value, password: password.value }, false)
+    console.log(username.value, password.value)  // Debugging statement
     if (!response.ok) throw new Error()
-    const data = await response.json()
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('HR-ID', username.value)
-    localStorage.setItem('is_logged_in', 'true')
+    const data = await response.json()  
+    auth.login({ token: data.token, is_staff: data.is_staff, hr_id: data.hr_id, name: data.user_name })
     router.push('/dashboard')
   } catch {
     errorMessage.value = 'Invalid HR ID or password.'
