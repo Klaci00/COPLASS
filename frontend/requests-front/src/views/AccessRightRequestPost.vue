@@ -25,7 +25,15 @@
         <label>End Date*:</label>
         <input type="date" v-model="formData.end_date" required />
       </div>
-
+    <div class="form-group">
+        <label>Supervisor*:</label>
+        <select v-model="formData.supervisor" required>
+          <option :value="null">-- No Supervisor Assigned --</option>
+          <option v-for="s in supervisor" :key="s.id" :value="s.id">
+            {{ s.name || `Supervisor #${s.id}` }}
+          </option>
+        </select>
+      </div>
       <div class="form-group">
         <label>Employee*:</label>
         <select v-model="formData.employee" required>
@@ -50,9 +58,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
+import { useAuthStore } from '../stores/auth'
+
 const { get, post } = useApi()
+const authStore = useAuthStore()
 // 1. Reactive state for our dropdown data
 const securityZones = ref([])
+const supervisor = ref([])
 const employees = ref([])
 
 // 2. Reactive state for the form payload
@@ -60,6 +72,7 @@ const formData = ref({
   security_zone: '',
   start_date: '',
   end_date: '',
+  supervisor: null, // Can be null because blank=True, null=True in Django
   employee: null // Can be null because blank=True, null=True in Django
 })
 
@@ -80,12 +93,15 @@ onMounted(async () => {
     // `await zoneRes.json().then(data => data.results)` instead
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
-    const is_staff = localStorage.getItem('is_staff') === 'true'
-    if (!is_staff) {
+    supervisor.value = employees.value.filter(emp => emp.is_staff === true)
+
+    console.log('Fetched Employees:', employees.value)
+    console.log('Fetched Supervisors:', supervisor.value)
+    if (!authStore.is_staff) {
       // If the user is not staff, filter the employees to only include themselves
-      const hrId = localStorage.getItem('HR-ID')
-      employees.value = employees.value.filter(emp => emp.id.toString() === hrId)
+      employees.value = employees.value.filter(emp => emp.id.toString() === authStore.hr_id)
     }
+
   } catch (error) {
     console.error('Failed to load dropdown data:', error)
   }
@@ -113,6 +129,7 @@ const submitRequest = async () => {
       security_zone: '',
       start_date: '',
       end_date: '',
+      supervisor: null,
       employee: null
     }
   } catch (error) {

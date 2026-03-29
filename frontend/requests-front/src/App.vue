@@ -4,7 +4,7 @@
       <span class="navbar-brand">🔐 AccessControl</span>
       <span class="navbar-brand">{{`Welcome, ${auth.display_name}!`}}</span>
       <div class="navbar-links">
-        <template v-if="isLoggedIn">
+        <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
           <router-link to="/access-right-requests">Access Requests</router-link>
           <router-link to="/messages">
@@ -36,10 +36,9 @@ const auth = useAuthStore()
 const router = useRouter()
 const { get } = useApi()
 const unreadCount = ref(0)
-const isLoggedIn = computed(() => !!localStorage.getItem('token'))
 
 const fetchUnreadCount = async () => {
-  if (!isLoggedIn.value) return
+  if (!auth.is_logged_in) return
   const hrId = auth.hr_id
   try {
     const res = await get(`/messages/?employee_id=${hrId}`)

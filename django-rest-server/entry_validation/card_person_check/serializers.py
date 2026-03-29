@@ -40,6 +40,9 @@ class AccessRightRequestSerializer(serializers.Serializer):
     security_zone = serializers.PrimaryKeyRelatedField(
         queryset=SecurityZone.objects.all()
     )
+    supervisor      = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all()
+    )
     employee      = serializers.PrimaryKeyRelatedField(
         queryset=Employee.objects.all()
     )
@@ -78,7 +81,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model  = Employee
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'is_staff']
 
     def get_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"

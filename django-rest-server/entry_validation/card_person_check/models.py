@@ -20,9 +20,25 @@ class AccessRightRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField()
     end_date = models.DateField()
+    supervisor = models.ForeignKey('Employee', on_delete=models.SET_NULL, related_name='access_right_requests_for_supervisor', null=True)
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE,
                               related_name='access_right_requests_for_employee')
     approved = models.BooleanField(default=False)
+    def approve(self):
+        if self.approved:
+            return  # already approved, do nothing
+        self.approved = True
+        self.save(update_fields=['approved'])
+        AccessRight.objects.create(
+            security_zone=self.security_zone,
+            start_date=self.start_date,
+            end_date=self.end_date,
+            employee=self.employee
+        )
+        Message.objects.create(
+            content=f"Your access right request for {self.security_zone.name} has been approved.",
+            employee=self.employee
+        )
     def __str__(self):
         emp = f"{self.employee.firstname} {self.employee.lastname}" if self.employee else "Unknown Employee"
         zone = self.security_zone.name if self.security_zone else "Unknown Zone"

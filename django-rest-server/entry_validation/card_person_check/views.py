@@ -63,6 +63,15 @@ class AccessRightRequestView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
+class AccessRightRequestListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        if request.user.is_staff:
+            requests = AccessRightRequest.objects.filter(supervisor=request.user).order_by('-created_at')
+        else:
+            return Response({"error": "You do not have permission to view access right requests."}, status=403)
+        return Response(AccessRightRequestSerializer(requests, many=True).data)
+
 class SecurityZoneListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
