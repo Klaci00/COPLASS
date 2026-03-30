@@ -1,13 +1,15 @@
 from datetime import datetime
 import requests
 import random
+import logging
 
 class Gate:
     def __init__(self, gate_id, server_url):
+        self.name = None
         self.gate = gate_id
         self.server_url = server_url
-        self.entry_connections = []
-        self.exit_connections = []
+        self.out_zone = None
+        self.in_zone = None
 
     def check_card(self, card_number, direction):
         data = {'card_number': card_number, 'gate': self.gate, 'timestamp': datetime.now().isoformat(), 'direction': direction}
@@ -22,20 +24,35 @@ class Gate:
         except requests.exceptions.RequestException as e:
             print(f"Error sending data: {e}")
 
+class Zone:
+    def __init__(self, in_gates : list[Gate], out_gates : list[Gate]):
+        self.name = None
+        self.in_gates = in_gates
+        self.out_gates = out_gates
+
 class Employee:
-    def __init__(self,card_number, entrance : list[Gate]):
+    def __init__(self,card_number : int, zone : Zone):
+        self.name = f"Employee {card_number}"
         self.card_number = card_number
-        self.direction = 0
-        self.in_directions = entrance
-        self.out_directions = []
-    def pass_gate(self, gate : Gate):
-        if gate.check_card(self.card_number, self.direction):
-            print(f"Employee with card {self.card_number} passed through gate {gate.gate} in direction {"inside" if self.direction == 0 else "outside"}")
-            self.out_directions = gate.exit_connections
-            self.in_directions = gate.entry_connections
-            if len(self.in_directions) > 0:
-                self.direction = random.randint(0,1)
-            else:
-                self.direction = 1
+        self.zone = zone
+        self.direction : int = 0
+        self.logger = logging.getLogger(__name__)
     def move(self):
-        self.pass_gate(random.choice(self.in_directions if self.direction == 0 else self.out_directions))
+        if len(self.zone.in_gates) == 0:
+            self.direction = 1
+        elif len(self.zone.out_gates) == 0:
+            self.direction = 0
+        else:
+            self.direction = random.randint(0,1)
+        print(f'Employee has decided to go {'inside' if self.direction == 0 else 'outside'}.')
+
+        if self.direction == 0:
+            gate : Gate = random.choice(self.zone.in_gates)
+        else:
+            gate : Gate = random.choice(self.zone.out_gates)
+            print(f'Employee has decided to go through {gate.name}.')
+        if gate.check_card(self.card_number, self.direction):
+            if self.zone != gate.in_zone:
+                self.zone = gate.in_zone
+            else:
+                self.zone = gate.out_zone
