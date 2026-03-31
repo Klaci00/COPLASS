@@ -5,6 +5,7 @@ from datetime import timedelta
 from dataclasses import dataclass
 from typing import Optional
 import logging
+from .constants import CHECK_PROBABILITY
 
 def check_access_rights(employee: Employee, gate: Gate, direction: int) -> bool:
     today = timezone.now().date()
@@ -40,7 +41,7 @@ def check_card_person(card, employee, gate, direction) -> AccessResult:
         return AccessResult(allowed=False, status_code=403, message="Card is temporarily locked.")
     if not check_access_rights(employee, gate, direction):
         return AccessResult(allowed=False, status_code=403, message="No valid access rights for this gate.")
-    if random.randint(0, 99) == 0:
+    if random.randint(1, CHECK_PROBABILITY) == 0:
         card.lock_until = timezone.now() + timedelta(minutes=5)
         card.save()
         return AccessResult(allowed=False, status_code=403, control=True)
