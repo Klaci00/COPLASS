@@ -1,5 +1,5 @@
 from rest_framework.views import APIView, Response
-from .models import Card, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee, Message
+from .models import Card, Department, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee, Message
 from .check import check_card_person
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view, permission_classes
@@ -169,3 +169,19 @@ class MessageListView(APIView):
         message.is_read = data['is_read']
         message.save()
         return Response({"message": "Message updated successfully."}, status=200)
+
+class DepartmentListView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        departments = Department.objects.all()
+        return Response([{"id": dept.id, "name": dept.name} for dept in departments])
+
+class SuperVisorListView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        dept = request.query_params.get('department')
+        if dept:
+            supervisors = Employee.objects.filter(is_supervisor=True, department__id=dept, on_the_clock=True)
+            return Response([{"id": sup.id, "name": f"{sup.firstname} {sup.lastname}"} for sup in supervisors])
+        else:
+            return Response({"error": "Department ID is required."}, status=400)

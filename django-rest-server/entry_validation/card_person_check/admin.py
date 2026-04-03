@@ -1,9 +1,12 @@
 from django.contrib import admin
-from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight, AccessRightRequest, Message
+from .models import Employee, Card, GateEvent, SecurityZone, Gate, AccessRight, AccessRightRequest, Message, Department
 
 
 # Register your models here.
 
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('employee', 'content', 'is_read', 'created_at')
     search_fields = ('employee__firstname', 'employee__lastname', 'employee__hr_id', 'content')
@@ -34,6 +37,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = ('firstname', 'lastname', 'hr_id', 'department')
     search_fields = ('firstname', 'lastname', 'hr_id', 'department')
     inlines = [CardInline, AccessRightInline]
+    filter_horizontal = ('deputy',)  # For ManyToManyField deputy
 
 class CardAdmin(admin.ModelAdmin):
     list_display = ('card_number', 'employee', 'is_active', 'valid_from', 'valid_to')
@@ -53,3 +57,4 @@ admin.site.register(Gate, GateAdmin)
 admin.site.register(AccessRight, AccessRightAdmin)
 admin.site.register(AccessRightRequest, AccessRightRequestAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(Department, DepartmentAdmin)

@@ -130,3 +130,5 @@ Thumbs.db
 .DS_Store
 .env.local
 django-rest-server/entry_validation/db.sqlite3
+django-rest-server/entry_validation/easy_init.py
+start.py

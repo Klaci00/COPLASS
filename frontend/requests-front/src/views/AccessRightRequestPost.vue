@@ -93,10 +93,8 @@ onMounted(async () => {
     // `await zoneRes.json().then(data => data.results)` instead
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
-    supervisor.value = employees.value.filter(emp => emp.is_staff === true)
+    supervisor.value = employees.value.filfter(emp => emp.is_staff === true)
 
-    console.log('Fetched Employees:', employees.value)
-    console.log('Fetched Supervisors:', supervisor.value)
     if (!authStore.is_staff) {
       // If the user is not staff, filter the employees to only include themselves
       employees.value = employees.value.filter(emp => emp.id.toString() === authStore.hr_id)

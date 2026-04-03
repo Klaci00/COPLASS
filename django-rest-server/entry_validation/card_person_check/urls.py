@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ApproveAccessRightRequestView, CheckCardPersonView, login_view, SecurityZoneListView, EmployeeListView,AccessRightRequestView, AccessRightRequestListView, RegisterEmployee, MessageListView
+from .views import ApproveAccessRightRequestView, CheckCardPersonView, login_view, SecurityZoneListView, EmployeeListView,AccessRightRequestView, AccessRightRequestListView, RegisterEmployee, MessageListView, DepartmentListView, SuperVisorListView
 
 urlpatterns = [ path("check_card_person/", CheckCardPersonView.as_view()),
                 path("login/", login_view, name="api-login"),
@@ -9,5 +9,7 @@ urlpatterns = [ path("check_card_person/", CheckCardPersonView.as_view()),
                 path('access-right-requests/', AccessRightRequestListView.as_view()),
                 path('access-right-requests/<int:pk>/approve/', ApproveAccessRightRequestView.as_view()),
                 path("register_employee/", RegisterEmployee.as_view(), name="api-register-employee"),
-                path("messages/", MessageListView.as_view(), name="api-messages"),  
+                path("messages/", MessageListView.as_view(), name="api-messages"), 
+                path("departments/", DepartmentListView.as_view(), name="api-departments"),
+                path("supervisors/", SuperVisorListView.as_view(), name="api-supervisors"), 
 ]

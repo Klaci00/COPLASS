@@ -6,8 +6,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 class AccessRight(models.Model):
     security_zone = models.ForeignKey('SecurityZone', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(db_index=True)
+    end_date = models.DateField(db_index=True)
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE,
                               related_name='access_rights_for_employee')
     def __str__(self):
@@ -44,6 +44,11 @@ class AccessRightRequest(models.Model):
         zone = self.security_zone.name if self.security_zone else "Unknown Zone"
         return f"Request: {emp} - {zone} ({self.start_date} → {self.end_date}) - {'Approved' if self.approved else 'Pending'}"
 
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+    
 class EmployeeManager(BaseUserManager):
     def create_user(self, hr_id, password=None, **extra_fields):
         if not hr_id:
@@ -64,12 +69,16 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     lastname = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     hr_id = models.IntegerField(unique=True)
-    department = models.CharField(max_length=100)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
     current_zone = models.ForeignKey('SecurityZone', on_delete=models.SET_NULL, null=True, blank=True)
+    on_the_clock = models.BooleanField(default=True)
+    deputy = models.ManyToManyField('self', symmetrical=True, related_name='deputies_for_employee', blank=True)
+    supervisor = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='supervisees')
     # Required for Django Admin and Authentication
     is_active = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    
     objects = EmployeeManager()
     # Tells Django to use hr_id instead of a username for login
     USERNAME_FIELD = 'hr_id'
