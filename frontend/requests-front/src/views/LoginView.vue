@@ -68,7 +68,7 @@ const handleLogin = async () => {
       token: data.token,
       is_staff: data.is_staff,
       hr_id: data.hr_id,
-      name: data.user_name,
+      user_name: data.user_name,
       is_supervisor: data.is_supervisor,
       department: data.department,
     })

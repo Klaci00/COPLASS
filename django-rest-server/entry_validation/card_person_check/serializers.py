@@ -40,7 +40,7 @@ class AccessRightRequestSerializer(serializers.ModelSerializer):
     employee_name = serializers.SerializerMethodField()
     supervisor_name = serializers.SerializerMethodField()
     zone_name = serializers.SerializerMethodField()
-
+    covered_as_deputy = serializers.BooleanField(read_only=True, default=False)
     class Meta:
         model = AccessRightRequest
         fields = [
@@ -48,7 +48,8 @@ class AccessRightRequestSerializer(serializers.ModelSerializer):
             'supervisor', 'supervisor_name',
             'security_zone', 'zone_name',
             'start_date', 'end_date',
-            'created_at', 'approved'
+            'created_at', 'approved',
+            'covered_as_deputy',
         ]
 
     def get_employee_name(self, obj):

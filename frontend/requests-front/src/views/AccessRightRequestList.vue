@@ -34,7 +34,7 @@
           </div>
           <!-- Approve button: only visible to staff, only on pending requests -->
           <button
-            v-if="auth.is_staff && !req.approved"
+            v-if="auth.is_supervisor && !req.approved"
             class="btn-approve"
             :disabled="approvingId === req.id"
             @click="approve(req)"

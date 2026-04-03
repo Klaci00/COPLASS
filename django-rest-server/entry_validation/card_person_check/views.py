@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+
 from rest_framework.views import APIView, Response
 from .models import Card, Department, GateEvent, Gate, AccessRightRequest, SecurityZone, Employee, Message
 from .check import check_card_person
@@ -17,6 +19,7 @@ from .serializers import (CheckCardPersonSerializer,
                           NewRegistrationsSerializer
                           )
 from django.db import models
+from django.db.models import Case, When, Value, BooleanField
 
 class CheckCardPersonView(APIView):
     def post(self, request):
@@ -70,11 +73,40 @@ class AccessRightRequestListView(APIView):
 
     def get(self, request):
         user = request.user
-        if user.is_staff:
+
+        if user.is_supervisor:
             # Supervisor sees requests assigned to them + their own requests
+            own_requests = models.Q(supervisor=user) | models.Q(employee=user)
+
+            # Find supervisors who are out of office AND have this user as a deputy.
+            # Since deputy is symmetrical, deputy=user matches both directions.
+            absent_supervisors = Employee.objects.filter(
+                is_supervisor=True,
+                on_the_clock=False,
+                deputy=user
+            )
+            supervisors_with_no_deputies = Employee.objects.filter(
+                is_supervisor=True,deputy = None, on_the_clock=False )
+            if supervisors_with_no_deputies.exists():
+                super_super = supervisors_with_no_deputies.filter(supervisor = user)
+                supervisor_coverage = models.Q(supervisor__in=super_super)
+                
+            # Include requests assigned to those absent supervisors
+            deputy_coverage = models.Q(supervisor__in=absent_supervisors)
+
             requests = AccessRightRequest.objects.filter(
-                models.Q(supervisor=user) | models.Q(employee=user)
+                own_requests | deputy_coverage | (  supervisor_coverage if supervisors_with_no_deputies.exists() else models.Q())
             ).distinct().order_by('-created_at')
+            
+            requests = requests.annotate(
+                covered_as_deputy=Case(
+                When(supervisor__in=absent_supervisors, then=Value(True)),
+                    default=Value(False),
+                    output_field=BooleanField()
+                )
+            )
+
+
         else:
             # Regular employee sees only their own requests
             requests = AccessRightRequest.objects.filter(
@@ -83,12 +115,13 @@ class AccessRightRequestListView(APIView):
 
         return Response(AccessRightRequestSerializer(requests, many=True).data)
 
-
 class ApproveAccessRightRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        if not request.user.is_staff:
+        user = request.user
+
+        if not user.is_supervisor:
             return Response({"error": "Permission denied."}, status=403)
 
         access_request = AccessRightRequest.objects.filter(pk=pk).first()
@@ -97,13 +130,24 @@ class ApproveAccessRightRequestView(APIView):
         if access_request.approved:
             return Response({"error": "Already approved."}, status=400)
 
-        # Ensure the supervisor can only approve requests assigned to them
-        if access_request.supervisor != request.user:
-            return Response({"error": "You are not the supervisor for this request."}, status=403)
+        is_assigned_supervisor = access_request.supervisor == user
 
+        # Deputy coverage: supervisor exists, is absent, and user is their deputy
+        is_covering_deputy = (
+            access_request.supervisor is not None
+            and not access_request.supervisor.on_the_clock
+            and access_request.supervisor.deputy.filter(pk=user.pk).exists()
+        )
+        is_covering_supervisor = (
+            access_request.supervisor is not None and not access_request.supervisor.on_the_clock
+            and access_request.supervisor.supervisor == user)
+
+        if not is_assigned_supervisor and not is_covering_deputy and not is_covering_supervisor:
+            return Response({"error": "You are not authorised to approve this request."}, status=403)
+
+        # ✅ Single approval point
         access_request.approve()
         return Response({"message": "Request approved successfully."}, status=200)
-
 class SecurityZoneListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
