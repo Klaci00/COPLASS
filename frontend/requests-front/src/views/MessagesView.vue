@@ -27,8 +27,9 @@
 import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
-
+import { useMessageCounterStore } from '../stores/messageCounter'
 const auth = useAuthStore()
+const counter = useMessageCounterStore()
 const { get, post } = useApi()
 const messages = ref([])
 const isLoading = ref(true)
@@ -59,6 +60,7 @@ const markAsRead = async (msg) => {
     const response = await post('/messages/', { id: msg.id, is_read: true })
     if (!response.ok) throw new Error('Failed to update message.')
     msg.is_read = true
+    counter.decrement()
   } catch (err) {
     // ✅ No alert() — surface the error in the template instead
     error.value = err.message

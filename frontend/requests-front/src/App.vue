@@ -1,4 +1,4 @@
-<template>
+<template :key="$route.path">
   <div id="app">
     <nav class="navbar">
       <span class="navbar-brand">🔐 AccessControl</span>
@@ -12,7 +12,7 @@
           <router-link to="/access-right-requests/list">Request List</router-link>
           <router-link to="/messages">
             Messages
-            <span v-if="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+            <span v-if="counter.unreadCount > 0" class="badge">{{ counter.unreadCount }}</span>
           </router-link>
           <template v-if="auth.is_supervisor">
             <router-link to="/new-employees">New Employees</router-link>
@@ -33,36 +33,30 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useApi } from './composables/useApi'
+import { useRouter, useRoute } from 'vue-router'
+import { watch, onUnmounted } from 'vue'
 import { useAuthStore } from './stores/auth'
-
+import { useMessageCounterStore } from './stores/messageCounter'
 const auth   = useAuthStore()
 const router = useRouter()
-const { get } = useApi()
-const unreadCount = ref(0)
+const route = useRoute()
+const counter = useMessageCounterStore()
+let pollInterval = null
+// On route change
+watch(() => route.path, () => {
+  if (auth.is_logged_in) counter.fetchUnreadCount()
+})
 
-const fetchUnreadCount = async () => {
-  try {
-    const res = await get(`/messages/?employee_id=${auth.hr_id}`)
-    if (res.ok) {
-      const data = await res.json()
-      unreadCount.value = data.filter(m => !m.is_read).length
-    }
-  } catch {}
-}
-
-// ✅ Replaces onMounted — reacts to login/logout at any time
-watch(
-  () => auth.is_logged_in,
-  (loggedIn) => {
-    if (loggedIn) fetchUnreadCount()
-    else unreadCount.value = 0
-  },
-  { immediate: true }
-)
-
+// On login/logout (manages the interval)
+watch(() => auth.is_logged_in, (loggedIn) => {
+  if (loggedIn) {
+    counter.fetchUnreadCount()
+    pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
+  } else {
+    counter.reset()
+    clearInterval(pollInterval)
+  }
+}, { immediate: true })
 const handleLogout = () => {
   auth.logout()
   router.push('/login')
