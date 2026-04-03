@@ -75,40 +75,43 @@ class AccessRightRequestListView(APIView):
         user = request.user
 
         if user.is_supervisor:
-            # Supervisor sees requests assigned to them + their own requests
             own_requests = models.Q(supervisor=user) | models.Q(employee=user)
 
-            # Find supervisors who are out of office AND have this user as a deputy.
-            # Since deputy is symmetrical, deputy=user matches both directions.
             absent_supervisors = Employee.objects.filter(
                 is_supervisor=True,
                 on_the_clock=False,
                 deputy=user
             )
-            supervisors_with_no_deputies = Employee.objects.filter(
-                is_supervisor=True,deputy = None, on_the_clock=False )
-            if supervisors_with_no_deputies.exists():
-                super_super = supervisors_with_no_deputies.filter(supervisor = user)
-                supervisor_coverage = models.Q(supervisor__in=super_super)
-                
-            # Include requests assigned to those absent supervisors
             deputy_coverage = models.Q(supervisor__in=absent_supervisors)
 
+            # Absent supervisors with no deputies — current user covers if they are their supervisor
+            supervisors_with_no_deputies = Employee.objects.filter(
+                is_supervisor=True,
+                on_the_clock=False,
+                deputy=None,
+                supervisor=user
+            )
+            # ✅ Single exists() call stored in a variable
+            has_absent_no_deputy = supervisors_with_no_deputies.exists()
+            supervisor_coverage = (
+                models.Q(supervisor__in=supervisors_with_no_deputies)
+                if has_absent_no_deputy else models.Q()
+            )
+
             requests = AccessRightRequest.objects.filter(
-                own_requests | deputy_coverage | (  supervisor_coverage if supervisors_with_no_deputies.exists() else models.Q())
+                own_requests | deputy_coverage | supervisor_coverage
             ).distinct().order_by('-created_at')
-            
+
             requests = requests.annotate(
                 covered_as_deputy=Case(
-                When(supervisor__in=absent_supervisors, then=Value(True)),
+                    When(supervisor__in=absent_supervisors, then=Value(True)),
+                    When(supervisor__in=supervisors_with_no_deputies, then=Value(True)),
                     default=Value(False),
                     output_field=BooleanField()
                 )
             )
 
-
         else:
-            # Regular employee sees only their own requests
             requests = AccessRightRequest.objects.filter(
                 employee=user
             ).order_by('-created_at')
