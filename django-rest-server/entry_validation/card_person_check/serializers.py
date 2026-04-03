@@ -79,7 +79,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model  = Employee
-        fields = ['id', 'name', 'is_staff']
+        fields = ['id', 'name', 'is_staff', 'is_supervisor', 'department']
 
     def get_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"

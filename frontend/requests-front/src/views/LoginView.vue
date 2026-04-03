@@ -48,7 +48,7 @@ const handleLogin = async () => {
     console.log(username.value, password.value)  // Debugging statement
     if (!response.ok) throw new Error()
     const data = await response.json()  
-    auth.login({ token: data.token, is_staff: data.is_staff, hr_id: data.hr_id, name: data.user_name })
+    auth.login({ token: data.token, is_staff: data.is_staff, hr_id: data.hr_id, name: data.user_name, is_supervisor: data.is_supervisor, department: data.department })
     router.push('/dashboard')
   } catch {
     errorMessage.value = 'Invalid HR ID or password.'

@@ -7,7 +7,8 @@ export const useAuthStore = defineStore('auth', () => {
   const is_staff = ref(localStorage.getItem('is_staff') === 'true')
   const hr_id  = ref(localStorage.getItem('hr_id') || null)
   const user_name  = ref(localStorage.getItem('user_name') || null)
-
+  const is_supervisor = ref(localStorage.getItem('is_supervisor') === 'true')
+  const department = ref(localStorage.getItem('department') || null)
   const is_logged_in = computed(() => !!token.value)
   const display_name = computed(() =>
     hr_id.value && user_name.value ? `${user_name.value} #${hr_id.value}` : 'Guest'
@@ -22,6 +23,8 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('is_staff', data.is_staff.toString())
     localStorage.setItem('hr_id', data.hr_id)
     localStorage.setItem('user_name', data.name)
+    localStorage.setItem('is_supervisor', data.is_supervisor.toString())
+    localStorage.setItem('department', data.department)
   }
 
   function logout() {
@@ -33,7 +36,9 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('hr_id  ')
     localStorage.removeItem('user_name')
     localStorage.removeItem('is_staff')
+    localStorage.removeItem('is_supervisor')
+    localStorage.removeItem('department')
   }
   
-  return { token, hr_id, user_name, is_logged_in, display_name,is_staff, login, logout }
+  return { token, hr_id, user_name, is_logged_in, display_name,is_staff, is_supervisor, department, login, logout }
 })

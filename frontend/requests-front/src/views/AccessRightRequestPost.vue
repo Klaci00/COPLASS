@@ -80,20 +80,22 @@ const formData = ref({
 const isSubmitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
+console.log(authStore)
 
 // 5. Fetch dropdown options when the component loads
 onMounted(async () => {
   try {
-    const [zoneRes, empRes] = await Promise.all([
+    const [zoneRes, empRes, supRes] = await Promise.all([
       get('/security_zones/'),
-      get('/employees/')
+      get('/employees/'),
+      get(`/supervisors/?department=${authStore.department}`)
     ])
     
     // Note: If you are using Django Rest Framework Pagination, you may need to map 
     // `await zoneRes.json().then(data => data.results)` instead
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
-    supervisor.value = employees.value.filfter(emp => emp.is_staff === true)
+    supervisor.value = await supRes.json()
 
     if (!authStore.is_staff) {
       // If the user is not staff, filter the employees to only include themselves
