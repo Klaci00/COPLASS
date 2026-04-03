@@ -32,7 +32,7 @@
 
 <script setup>
 import { useRouter, useRoute } from 'vue-router'
-import { watch, onUnmounted } from 'vue'
+import { watch } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useMessageCounterStore } from './stores/messageCounter'
 const auth = useAuthStore()

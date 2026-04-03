@@ -18,7 +18,9 @@ export const useMessageCounterStore = defineStore('messageCounter', () => {
         const data = await res.json()
         unreadCount.value = data.filter((m) => !m.is_read).length
       }
-    } catch {}
+    } catch (error) {
+      console.error('Failed to fetch unread message count', error)
+    }
   }
 
   function decrement() {
