@@ -17,33 +17,33 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashBoardView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/access-right-requests',
       name: 'access-right-requests',
       component: AccessRightRequestPost,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/messages',
       name: 'messages',
       component: MessagesView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
-    path: '/access-right-requests/list',
-    name: 'access-right-requests-list',
-    component: AccessRightRequestList,
-    meta: { requiresAuth: true }
-},
+      path: '/access-right-requests/list',
+      name: 'access-right-requests-list',
+      component: AccessRightRequestList,
+      meta: { requiresAuth: true },
+    },
     {
-    path: '/new-employees',
-    name: 'new-employees',
-    component: NewEmployeesListView,
-    meta: { requiresAuth: true }
-}
-  ]
+      path: '/new-employees',
+      name: 'new-employees',
+      component: NewEmployeesListView,
+      meta: { requiresAuth: true },
+    },
+  ],
 })
 
 // ✅ Navigation guard — protects all routes with requiresAuth: true

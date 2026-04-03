@@ -2,7 +2,7 @@
   <div class="dashboard-container">
     <h2>Welcome to your Dashboard!</h2>
     <p>You have successfully logged in and received a token from Django.</p>
-    
+
     <button @click="handleLogout" class="logout-btn">Logout</button>
   </div>
 </template>
@@ -16,7 +16,7 @@ const handleLogout = () => {
   // 1. Remove the token from local storage
   localStorage.removeItem('token')
   localStorage.removeItem('is_logged_in')
-  
+
   // 2. Redirect the user back to the login page
   router.push('/login')
 }

@@ -6,13 +6,25 @@
     <form @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="username">HR ID</label>
-        <input id="username" v-model="username" type="text"
-               placeholder="e.g. 1042" required autocomplete="username" />
+        <input
+          id="username"
+          v-model="username"
+          type="text"
+          placeholder="e.g. 1042"
+          required
+          autocomplete="username"
+        />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input id="password" v-model="password" type="password"
-               placeholder="••••••••" required autocomplete="current-password" />
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        />
       </div>
 
       <p v-if="errorMessage" class="feedback error">{{ errorMessage }}</p>
@@ -44,11 +56,22 @@ const handleLogin = async () => {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const response = await post('/login/', { username: username.value, password: password.value }, false)
-    console.log(username.value, password.value)  // Debugging statement
+    const response = await post(
+      '/login/',
+      { username: username.value, password: password.value },
+      false,
+    )
+    console.log(username.value, password.value) // Debugging statement
     if (!response.ok) throw new Error()
-    const data = await response.json()  
-    auth.login({ token: data.token, is_staff: data.is_staff, hr_id: data.hr_id, name: data.user_name, is_supervisor: data.is_supervisor, department: data.department })
+    const data = await response.json()
+    auth.login({
+      token: data.token,
+      is_staff: data.is_staff,
+      hr_id: data.hr_id,
+      name: data.user_name,
+      is_supervisor: data.is_supervisor,
+      department: data.department,
+    })
     router.push('/dashboard')
   } catch {
     errorMessage.value = 'Invalid HR ID or password.'

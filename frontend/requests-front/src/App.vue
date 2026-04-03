@@ -2,9 +2,7 @@
   <div id="app">
     <nav class="navbar">
       <span class="navbar-brand">🔐 AccessControl</span>
-      <span class="navbar-brand" v-if="auth.is_logged_in">
-        Welcome, {{ auth.display_name }}!
-      </span>
+      <span class="navbar-brand" v-if="auth.is_logged_in"> Welcome, {{ auth.display_name }}! </span>
       <div class="navbar-links">
         <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
@@ -37,26 +35,33 @@ import { useRouter, useRoute } from 'vue-router'
 import { watch, onUnmounted } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useMessageCounterStore } from './stores/messageCounter'
-const auth   = useAuthStore()
+const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const counter = useMessageCounterStore()
 let pollInterval = null
 // On route change
-watch(() => route.path, () => {
-  if (auth.is_logged_in) counter.fetchUnreadCount()
-})
+watch(
+  () => route.path,
+  () => {
+    if (auth.is_logged_in) counter.fetchUnreadCount()
+  },
+)
 
 // On login/logout (manages the interval)
-watch(() => auth.is_logged_in, (loggedIn) => {
-  if (loggedIn) {
-    counter.fetchUnreadCount()
-    pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
-  } else {
-    counter.reset()
-    clearInterval(pollInterval)
-  }
-}, { immediate: true })
+watch(
+  () => auth.is_logged_in,
+  (loggedIn) => {
+    if (loggedIn) {
+      counter.fetchUnreadCount()
+      pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
+    } else {
+      counter.reset()
+      clearInterval(pollInterval)
+    }
+  },
+  { immediate: true },
+)
 const handleLogout = () => {
   auth.logout()
   router.push('/login')
@@ -76,13 +81,19 @@ const handleLogout = () => {
   --color-success: #16a34a;
   --color-error: #dc2626;
   --radius: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg); color: var(--color-text); }
-
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
 
 .navbar {
   display: flex;
@@ -95,9 +106,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
-
 
 .navbar-brand {
   font-weight: 700;
@@ -105,13 +115,11 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   letter-spacing: -0.01em;
 }
 
-
 .navbar-links {
   display: flex;
   align-items: center;
   gap: 24px;
 }
-
 
 .navbar-links a {
   font-size: 0.9rem;
@@ -121,9 +129,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   position: relative;
   transition: color 0.15s;
 }
-.navbar-links a:hover { color: var(--color-text); }
-.navbar-links a.router-link-active { color: var(--color-primary); }
-
+.navbar-links a:hover {
+  color: var(--color-text);
+}
+.navbar-links a.router-link-active {
+  color: var(--color-primary);
+}
 
 .badge {
   display: inline-flex;
@@ -141,7 +152,6 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   vertical-align: middle;
 }
 
-
 .btn-logout {
   font-size: 0.875rem;
   font-weight: 500;
@@ -153,8 +163,14 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   cursor: pointer;
   transition: all 0.15s;
 }
-.btn-logout:hover { background: var(--color-danger); color: white; }
+.btn-logout:hover {
+  background: var(--color-danger);
+  color: white;
+}
 
-
-main { padding: 40px 32px; max-width: 960px; margin: 0 auto; }
+main {
+  padding: 40px 32px;
+  max-width: 960px;
+  margin: 0 auto;
+}
 </style>

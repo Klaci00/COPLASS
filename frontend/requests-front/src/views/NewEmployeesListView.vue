@@ -2,9 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h1>Newly Registered Employees</h1>
-      <router-link to="/new-employees/new" class="btn-primary">
-        + Register Employee
-      </router-link>
+      <router-link to="/new-employees/new" class="btn-primary"> + Register Employee </router-link>
     </div>
 
     <!-- Loading -->
@@ -28,9 +26,9 @@
     <ul v-else class="request-list">
       <li v-for="emp in employees" :key="emp.id" class="request-card">
         <div class="request-card-header">
-            <div class="request-meta">
-                <span class="emp_name">{{ emp.name }}</span>
-            </div>
+          <div class="request-meta">
+            <span class="emp_name">{{ emp.name }}</span>
+          </div>
           <!-- Approve button: only visible to staff, only on pending requests -->
           <button
             v-if="auth.is_supervisor"
@@ -47,7 +45,6 @@
             <span class="label">Employee</span>
             <span>{{ emp.name }}</span>
           </div>
-          
         </div>
 
         <p v-if="approveError[emp.id]" class="feedback error">
@@ -66,11 +63,11 @@ import { useAuthStore } from '../stores/auth'
 const { get, post } = useApi()
 const auth = useAuthStore()
 
-const employees    = ref([])
-const isLoading   = ref(true)
-const error       = ref('')
-const approvingId = ref(null)      // tracks which row is mid-request
-const approveError = ref({})       // per-row error messages
+const employees = ref([])
+const isLoading = ref(true)
+const error = ref('')
+const approvingId = ref(null) // tracks which row is mid-request
+const approveError = ref({}) // per-row error messages
 
 onMounted(async () => {
   try {
@@ -102,11 +99,13 @@ const approve = async (req) => {
     approvingId.value = null
   }
 }
-
 </script>
 
 <style scoped>
-.page { max-width: 760px; margin: 0 auto; }
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+}
 
 .page-header {
   display: flex;
@@ -114,7 +113,10 @@ const approve = async (req) => {
   align-items: center;
   margin-bottom: 24px;
 }
-.page-header h1 { font-size: 1.4rem; font-weight: 700; }
+.page-header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
 
 .btn-primary {
   padding: 8px 16px;
@@ -128,7 +130,9 @@ const approve = async (req) => {
   text-decoration: none;
   transition: background 0.15s;
 }
-.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
 
 /* State boxes */
 .state-box {
@@ -142,7 +146,13 @@ const approve = async (req) => {
 }
 
 /* List */
-.request-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.request-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 .request-card {
   background: var(--color-surface);
@@ -159,9 +169,16 @@ const approve = async (req) => {
   margin-bottom: 14px;
 }
 
-.request-meta { display: flex; align-items: center; gap: 10px; }
+.request-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-.zone-name { font-weight: 700; font-size: 1rem; }
+.zone-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
 
 .status-badge {
   font-size: 0.72rem;
@@ -171,8 +188,14 @@ const approve = async (req) => {
   padding: 3px 8px;
   border-radius: 99px;
 }
-.status-badge.approved { background: #dcfce7; color: #15803d; }
-.status-badge.pending  { background: #fef9c3; color: #a16207; }
+.status-badge.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.status-badge.pending {
+  background: #fef9c3;
+  color: #a16207;
+}
 
 .btn-approve {
   padding: 6px 14px;
@@ -185,11 +208,20 @@ const approve = async (req) => {
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-approve:hover:not(:disabled) { background: var(--color-primary-hover); }
-.btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-approve:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+.btn-approve:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Details */
-.request-card-body { display: flex; flex-direction: column; gap: 6px; }
+.request-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
 .detail-row {
   display: flex;
@@ -211,12 +243,17 @@ const approve = async (req) => {
 
 /* Loading spinner */
 .spinner {
-  width: 24px; height: 24px;
+  width: 24px;
+  height: 24px;
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

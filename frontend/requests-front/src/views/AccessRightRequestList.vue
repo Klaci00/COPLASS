@@ -2,9 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h1>Access Right Requests</h1>
-      <router-link to="/access-right-requests/new" class="btn-primary">
-        + New Request
-      </router-link>
+      <router-link to="/access-right-requests/new" class="btn-primary"> + New Request </router-link>
     </div>
 
     <!-- Loading -->
@@ -80,12 +78,12 @@ import { useAuthStore } from '../stores/auth'
 const { get, post } = useApi()
 const auth = useAuthStore()
 
-const requests    = ref([])
-const isLoading   = ref(true)
-const error       = ref('')
-const approvingId = ref(null)      // tracks which row is mid-request
-const approveError = ref({})       // per-row error messages
-console.log('Is staff:', auth.is_logged_in, auth.is_staff)  // Debugging statement
+const requests = ref([])
+const isLoading = ref(true)
+const error = ref('')
+const approvingId = ref(null) // tracks which row is mid-request
+const approveError = ref({}) // per-row error messages
+console.log('Is staff:', auth.is_logged_in, auth.is_staff) // Debugging statement
 
 onMounted(async () => {
   try {
@@ -120,12 +118,17 @@ const approve = async (req) => {
 
 const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric'
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   })
 </script>
 
 <style scoped>
-.page { max-width: 760px; margin: 0 auto; }
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+}
 
 .page-header {
   display: flex;
@@ -133,7 +136,10 @@ const formatDate = (dateStr) =>
   align-items: center;
   margin-bottom: 24px;
 }
-.page-header h1 { font-size: 1.4rem; font-weight: 700; }
+.page-header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
 
 .btn-primary {
   padding: 8px 16px;
@@ -147,7 +153,9 @@ const formatDate = (dateStr) =>
   text-decoration: none;
   transition: background 0.15s;
 }
-.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
 
 /* State boxes */
 .state-box {
@@ -161,7 +169,13 @@ const formatDate = (dateStr) =>
 }
 
 /* List */
-.request-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.request-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
 .request-card {
   background: var(--color-surface);
@@ -178,9 +192,16 @@ const formatDate = (dateStr) =>
   margin-bottom: 14px;
 }
 
-.request-meta { display: flex; align-items: center; gap: 10px; }
+.request-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-.zone-name { font-weight: 700; font-size: 1rem; }
+.zone-name {
+  font-weight: 700;
+  font-size: 1rem;
+}
 
 .status-badge {
   font-size: 0.72rem;
@@ -190,8 +211,14 @@ const formatDate = (dateStr) =>
   padding: 3px 8px;
   border-radius: 99px;
 }
-.status-badge.approved { background: #dcfce7; color: #15803d; }
-.status-badge.pending  { background: #fef9c3; color: #a16207; }
+.status-badge.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+.status-badge.pending {
+  background: #fef9c3;
+  color: #a16207;
+}
 
 .btn-approve {
   padding: 6px 14px;
@@ -204,11 +231,20 @@ const formatDate = (dateStr) =>
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-approve:hover:not(:disabled) { background: var(--color-primary-hover); }
-.btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-approve:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+.btn-approve:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Details */
-.request-card-body { display: flex; flex-direction: column; gap: 6px; }
+.request-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
 .detail-row {
   display: flex;
@@ -230,12 +266,17 @@ const formatDate = (dateStr) =>
 
 /* Loading spinner */
 .spinner {
-  width: 24px; height: 24px;
+  width: 24px;
+  height: 24px;
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

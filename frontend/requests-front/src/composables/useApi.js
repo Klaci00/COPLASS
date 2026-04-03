@@ -10,12 +10,13 @@ export function useApi() {
     return headers
   }
 
-  const get  = (path)        => fetch(`${BASE_URL}${path}`, { headers: getHeaders() })
-  const post = (path, body)  => fetch(`${BASE_URL}${path}`, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify(body)
-  })
+  const get = (path) => fetch(`${BASE_URL}${path}`, { headers: getHeaders() })
+  const post = (path, body) =>
+    fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(body),
+    })
 
   return { get, post }
 }

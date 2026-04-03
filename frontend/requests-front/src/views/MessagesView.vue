@@ -7,10 +7,10 @@
     <div v-else-if="messages.length === 0" class="empty">You have no messages.</div>
 
     <ul v-else class="message-list">
-      <li 
-        v-for="msg in messages" 
-        :key="msg.id" 
-        :class="{ 'unread': !msg.is_read }"
+      <li
+        v-for="msg in messages"
+        :key="msg.id"
+        :class="{ unread: !msg.is_read }"
         @click="markAsRead(msg)"
       >
         <div class="msg-header">
@@ -75,7 +75,7 @@ const markAsRead = async (msg) => {
   padding: 20px;
   background: #fdfdfd;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .message-list {
@@ -126,6 +126,14 @@ const markAsRead = async (msg) => {
   line-height: 1.4;
 }
 
-.error { color: red; text-align: center; }
-.empty, .loading { text-align: center; color: #666; margin-top: 20px; }
+.error {
+  color: red;
+  text-align: center;
+}
+.empty,
+.loading {
+  text-align: center;
+  color: #666;
+  margin-top: 20px;
+}
 </style>

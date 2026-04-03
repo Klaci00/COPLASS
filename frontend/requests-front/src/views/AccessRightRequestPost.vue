@@ -1,7 +1,7 @@
 <template>
   <div class="form-container">
     <h2>Create Access Right Request</h2>
-    
+
     <form @submit.prevent="submitRequest">
       <!-- Security Zone Dropdown -->
       <div class="form-group">
@@ -25,7 +25,7 @@
         <label>End Date*:</label>
         <input type="date" v-model="formData.end_date" required />
       </div>
-    <div class="form-group">
+      <div class="form-group">
         <label>Supervisor*:</label>
         <select v-model="formData.supervisor" required>
           <option :value="null">-- No Supervisor Assigned --</option>
@@ -73,7 +73,7 @@ const formData = ref({
   start_date: '',
   end_date: '',
   supervisor: null, // Can be null because blank=True, null=True in Django
-  employee: null // Can be null because blank=True, null=True in Django
+  employee: null, // Can be null because blank=True, null=True in Django
 })
 
 // 3. UI State
@@ -88,10 +88,10 @@ onMounted(async () => {
     const [zoneRes, empRes, supRes] = await Promise.all([
       get('/security_zones/'),
       get('/employees/'),
-      get(`/supervisors/?department=${authStore.department}`)
+      get(`/supervisors/?department=${authStore.department}`),
     ])
-    
-    // Note: If you are using Django Rest Framework Pagination, you may need to map 
+
+    // Note: If you are using Django Rest Framework Pagination, you may need to map
     // `await zoneRes.json().then(data => data.results)` instead
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
@@ -99,9 +99,8 @@ onMounted(async () => {
 
     if (!authStore.is_staff) {
       // If the user is not staff, filter the employees to only include themselves
-      employees.value = employees.value.filter(emp => emp.id.toString() === authStore.hr_id)
+      employees.value = employees.value.filter((emp) => emp.id.toString() === authStore.hr_id)
     }
-
   } catch (error) {
     console.error('Failed to load dropdown data:', error)
   }
@@ -114,7 +113,9 @@ const submitRequest = async () => {
   submitSuccess.value = false
 
   try {
-    const response = await post('/access_right_requests/',formData.value // Vue automatically matches the Django fields
+    const response = await post(
+      '/access_right_requests/',
+      formData.value, // Vue automatically matches the Django fields
     )
 
     if (!response.ok) {
@@ -123,14 +124,14 @@ const submitRequest = async () => {
     }
 
     submitSuccess.value = true
-    
+
     // Optional: Reset form after success
     formData.value = {
       security_zone: '',
       start_date: '',
       end_date: '',
       supervisor: null,
-      employee: null
+      employee: null,
     }
   } catch (error) {
     submitError.value = 'Failed to submit: ' + error.message
@@ -147,7 +148,7 @@ const submitRequest = async () => {
   padding: 20px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .form-group {
   margin-bottom: 15px;
@@ -158,7 +159,8 @@ const submitRequest = async () => {
   margin-bottom: 5px;
   font-weight: bold;
 }
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -175,6 +177,10 @@ button {
 button:disabled {
   background-color: #a0d8c0;
 }
-.error { color: red; }
-.success { color: green; }
+.error {
+  color: red;
+}
+.success {
+  color: green;
+}
 </style>

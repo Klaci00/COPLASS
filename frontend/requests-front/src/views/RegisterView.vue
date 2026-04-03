@@ -1,7 +1,7 @@
 <template>
   <div class="register-container">
     <h2>Employee Registration</h2>
-    
+
     <form @submit.prevent="handleRegister">
       <div class="form-group">
         <label>First Name:</label>
@@ -40,7 +40,7 @@
         <label>Password:</label>
         <input type="password" v-model="formData.password" required />
       </div>
-      
+
       <div class="form-group">
         <label>Confirm Password:</label>
         <input type="password" v-model="formData.confirm_password" required />
@@ -65,8 +65,13 @@ import { useApi } from '../composables/useApi'
 
 const { get, post } = useApi()
 const formData = ref({
-  firstname: '', lastname: '', date_of_birth: '',
-  department: null, supervisor: null, password: '', confirm_password: ''
+  firstname: '',
+  lastname: '',
+  date_of_birth: '',
+  department: null,
+  supervisor: null,
+  password: '',
+  confirm_password: '',
 })
 const isSubmitting = ref(false)
 const submitError = ref('')
@@ -75,16 +80,16 @@ const department = ref([])
 const supervisor = ref([])
 
 // ✅ computed is read-only — never assign to it
-const isPasswordMatch = computed(() =>
-  !formData.value.confirm_password ||
-  formData.value.password === formData.value.confirm_password
+const isPasswordMatch = computed(
+  () =>
+    !formData.value.confirm_password || formData.value.password === formData.value.confirm_password,
 )
 
 onMounted(async () => {
   try {
-  const depRes = await get('/departments/')
-  if (!depRes.ok) throw new Error('Failed to fetch departments.')
-  department.value = await depRes.json()
+    const depRes = await get('/departments/')
+    if (!depRes.ok) throw new Error('Failed to fetch departments.')
+    department.value = await depRes.json()
   } catch (error) {
     console.error('Error fetching departments:', error)
   }
@@ -92,12 +97,12 @@ onMounted(async () => {
 
 const onSelectedDepartment = async () => {
   if (formData.value.department) {
-    try{
-    const supRes = await get(`/supervisors/?department=${formData.value.department}`)
-    supervisor.value = await supRes.json()
-  } catch (error) {
-    console.error('Error fetching supervisors:', error)
-  }
+    try {
+      const supRes = await get(`/supervisors/?department=${formData.value.department}`)
+      supervisor.value = await supRes.json()
+    } catch (error) {
+      console.error('Error fetching supervisors:', error)
+    }
   } else {
     supervisor.value = []
   }
