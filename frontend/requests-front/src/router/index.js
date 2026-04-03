@@ -5,6 +5,7 @@ import AccessRightRequestPost from '../views/AccessRightRequestPost.vue'
 import RegisterView from '../views/RegisterView.vue'
 import MessagesView from '../views/MessagesView.vue'
 import AccessRightRequestList from '../views/AccessRightRequestList.vue'
+import NewEmployeesListView from '../views/NewEmployeesListView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
     path: '/access-right-requests/list',
     name: 'access-right-requests-list',
     component: AccessRightRequestList,
+    meta: { requiresAuth: true }
+},
+    {
+    path: '/new-employees',
+    name: 'new-employees',
+    component: NewEmployeesListView,
     meta: { requiresAuth: true }
 }
   ]

@@ -84,6 +84,15 @@ class EmployeeListSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"
 
+class NewRegistrationsSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    class Meta:
+        model = Employee
+        queryset = Employee.objects.filter(is_active=False)
+        fields = ['id', 'name']
+    def get_name(self, obj):
+        return f"{obj.firstname} {obj.lastname}"
+
 
 class RegisterEmployeeSerializer(serializers.Serializer):
     firstname     = serializers.CharField(required=True, max_length=150)

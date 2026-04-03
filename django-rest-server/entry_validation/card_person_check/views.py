@@ -13,7 +13,8 @@ from .serializers import (CheckCardPersonSerializer,
                           EmployeeListSerializer,
                           RegisterEmployeeSerializer,
                           MessageSerializer,
-                          MessageUpdateSerializer
+                          MessageUpdateSerializer,
+                          NewRegistrationsSerializer
                           )
 from django.db import models
 
@@ -185,3 +186,32 @@ class SuperVisorListView(APIView):
             return Response([{"id": sup.id, "name": f"{sup.firstname} {sup.lastname}"} for sup in supervisors])
         else:
             return Response({"error": "Department ID is required."}, status=400)
+
+class NewRegistrationsListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = request.user
+        if not user.is_staff:
+            return Response({"error": "Permission denied."}, status=403)
+        new_employees = Employee.objects.filter(is_active=False, supervisor=user)
+        return Response(NewRegistrationsSerializer(new_employees, many=True).data)
+
+class ApproveEmployeeRegistrationView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, pk):
+        user = request.user
+        if not user.is_staff:
+            return Response({"error": "Permission denied."}, status=403)
+        employee = Employee.objects.filter(pk=pk, is_active=False, supervisor=user).first()
+        if not employee:
+            return Response({"error": "Employee not found or already active."}, status=404)
+        employee.is_active = True
+        employee.save()
+        Message.objects.create(
+            employee=employee,
+            content=(
+                f"Hello {employee.firstname}, your account has been approved and is now active. "
+                f"You can start using your credentials to access the system."
+            )
+        )
+        return Response({"message": "Employee registration approved successfully."}, status=200)

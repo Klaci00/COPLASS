@@ -113,7 +113,8 @@ const handleRegister = async () => {
   try {
     // ✅ Strip confirm_password before sending to backend
     const { confirm_password, ...payload } = formData.value
-    const response = await post('/register_employee/', payload, false)
+    console.log('Submitting registration with payload:', payload)
+    const response = await post('/register-employee/', payload, false)
     const data = await response.json()
     if (!response.ok) throw new Error(data.error || 'Registration failed.')
     submitSuccess.value = true

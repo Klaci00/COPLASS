@@ -2,7 +2,9 @@
   <div id="app">
     <nav class="navbar">
       <span class="navbar-brand">🔐 AccessControl</span>
-      <span class="navbar-brand">{{`Welcome, ${auth.display_name}!`}}</span>
+      <span class="navbar-brand" v-if="auth.is_logged_in">
+        Welcome, {{ auth.display_name }}!
+      </span>
       <div class="navbar-links">
         <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
@@ -12,7 +14,10 @@
             Messages
             <span v-if="unreadCount > 0" class="badge">{{ unreadCount }}</span>
           </router-link>
-          <button class="btn-logout" @click="auth.logout(); router.push('/login')">Logout</button>
+          <template v-if="auth.is_supervisor">
+            <router-link to="/new-employees">New Employees</router-link>
+          </template>
+          <button class="btn-logout" @click="handleLogout">Logout</button>
         </template>
         <template v-else>
           <router-link to="/login">Login</router-link>
@@ -28,21 +33,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApi } from './composables/useApi'
 import { useAuthStore } from './stores/auth'
 
-const auth = useAuthStore()
+const auth   = useAuthStore()
 const router = useRouter()
 const { get } = useApi()
 const unreadCount = ref(0)
 
 const fetchUnreadCount = async () => {
-  if (!auth.is_logged_in) return
-  const hrId = auth.hr_id
   try {
-    const res = await get(`/messages/?employee_id=${hrId}`)
+    const res = await get(`/messages/?employee_id=${auth.hr_id}`)
     if (res.ok) {
       const data = await res.json()
       unreadCount.value = data.filter(m => !m.is_read).length
@@ -50,10 +53,21 @@ const fetchUnreadCount = async () => {
   } catch {}
 }
 
-onMounted(fetchUnreadCount)
+// ✅ Replaces onMounted — reacts to login/logout at any time
+watch(
+  () => auth.is_logged_in,
+  (loggedIn) => {
+    if (loggedIn) fetchUnreadCount()
+    else unreadCount.value = 0
+  },
+  { immediate: true }
+)
 
+const handleLogout = () => {
+  auth.logout()
+  router.push('/login')
+}
 </script>
-
 <style>
 :root {
   --color-bg: #f5f5f7;
@@ -71,8 +85,10 @@ onMounted(fetchUnreadCount)
   --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
 }
 
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg); color: var(--color-text); }
+
 
 .navbar {
   display: flex;
@@ -88,17 +104,20 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
+
 .navbar-brand {
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.01em;
 }
 
+
 .navbar-links {
   display: flex;
   align-items: center;
   gap: 24px;
 }
+
 
 .navbar-links a {
   font-size: 0.9rem;
@@ -110,6 +129,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
 }
 .navbar-links a:hover { color: var(--color-text); }
 .navbar-links a.router-link-active { color: var(--color-primary); }
+
 
 .badge {
   display: inline-flex;
@@ -127,6 +147,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   vertical-align: middle;
 }
 
+
 .btn-logout {
   font-size: 0.875rem;
   font-weight: 500;
@@ -139,6 +160,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--color-bg);
   transition: all 0.15s;
 }
 .btn-logout:hover { background: var(--color-danger); color: white; }
+
 
 main { padding: 40px 32px; max-width: 960px; margin: 0 auto; }
 </style>
