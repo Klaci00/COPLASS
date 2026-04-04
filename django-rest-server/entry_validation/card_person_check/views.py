@@ -243,7 +243,7 @@ class NewRegistrationsListView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         user = request.user
-        if not user.is_staff:
+        if not user.is_supervisor:
             return Response({"error": "Permission denied."}, status=403)
         new_employees = Employee.objects.filter(is_active=False, supervisor=user)
         return Response(NewRegistrationsSerializer(new_employees, many=True).data)
@@ -252,7 +252,7 @@ class ApproveEmployeeRegistrationView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, pk):
         user = request.user
-        if not user.is_staff:
+        if not user.is_supervisor:
             return Response({"error": "Permission denied."}, status=403)
         employee = Employee.objects.filter(pk=pk, is_active=False, supervisor=user).first()
         if not employee:

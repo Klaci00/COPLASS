@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h1>Access Right Requests</h1>
-      <router-link to="/access-right-requests/new" class="btn-primary"> + New Request </router-link>
+      <router-link to="/access-right-requests" class="btn-primary"> + New Request </router-link>
     </div>
 
     <!-- Loading -->
@@ -17,7 +17,7 @@
     <!-- Empty -->
     <div v-else-if="requests.length === 0" class="state-box empty">
       <p>No access right requests found.</p>
-      <router-link to="/access-right-requests/new" class="btn-primary">
+      <router-link to="/access-right-requests" class="btn-primary">
         Create your first request
       </router-link>
     </div>
