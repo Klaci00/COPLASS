@@ -24,6 +24,7 @@
 
     <!-- List -->
     <ul v-else class="request-list">
+      <TransitionGroup name="fade-slide" tag="ul" class="request-list">
       <li v-for="emp in employees" :key="emp.id" class="request-card">
         <div class="request-card-header">
           <div class="request-meta">
@@ -51,6 +52,7 @@
           {{ approveError[emp.id] }}
         </p>
       </li>
+      </TransitionGroup>
     </ul>
   </div>
 </template>
@@ -59,10 +61,11 @@
 import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
+import { useNewEmpCounterStore } from '../stores/newEmpCounter'
 
 const { get, post } = useApi()
 const auth = useAuthStore()
-
+const newEmpCounter = useNewEmpCounterStore()
 const employees = ref([])
 const isLoading = ref(true)
 const error = ref('')
@@ -84,6 +87,7 @@ onMounted(async () => {
 const approve = async (req) => {
   approvingId.value = req.id
   delete approveError.value[req.id]
+  newEmpCounter.decrement()
 
   try {
     const res = await post(`/approve-registration/${req.id}/`, {})
@@ -92,7 +96,7 @@ const approve = async (req) => {
       throw new Error(data.error || 'Approval failed.')
     }
     // Optimistically update the row — no full refetch needed
-    req.approved = true
+    employees.value = employees.value.filter((e) => e.id !== req.id)
   } catch (err) {
     approveError.value[req.id] = err.message
   } finally {
@@ -240,7 +244,13 @@ const approve = async (req) => {
   font-size: 0.8rem;
   color: var(--color-error);
 }
-
+.fade-slide-leave-active {
+  transition: all 0.6s ease;
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
 /* Loading spinner */
 .spinner {
   width: 24px;

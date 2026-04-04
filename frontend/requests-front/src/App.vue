@@ -7,13 +7,21 @@
         <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
           <router-link to="/access-right-requests">Access Requests</router-link>
-          <router-link to="/access-right-requests/list">Request List<span v-if="requestCounter.unapprovedCount > 0" class="badge">{{ requestCounter.unapprovedCount }}</span></router-link>
+          <router-link to="/access-right-requests/list"
+            >Request List<span v-if="requestCounter.unapprovedCount > 0" class="badge">{{
+              requestCounter.unapprovedCount
+            }}</span></router-link
+          >
           <router-link to="/messages">
             Messages
             <span v-if="counter.unreadCount > 0" class="badge">{{ counter.unreadCount }}</span>
           </router-link>
           <template v-if="auth.is_supervisor">
-            <router-link to="/new-employees">New Employees<span v-if="newEmpCounter.unapprovedCount > 0" class="badge">{{ newEmpCounter.unapprovedCount }}</span></router-link>
+            <router-link to="/new-employees"
+              >New Employees<span v-if="newEmpCounter.unapprovedCount > 0" class="badge">{{
+                newEmpCounter.unapprovedCount
+              }}</span></router-link
+            >
           </template>
           <button class="btn-logout" @click="handleLogout">Logout</button>
         </template>
@@ -48,9 +56,10 @@ let pollInterval = null
 watch(
   () => route.path,
   () => {
-    if (auth.is_logged_in) {counter.fetchUnreadCount()
-                            requestCounter.fetchunapprovedCount()
-                            newEmpCounter.fetchunapprovedCount()
+    if (auth.is_logged_in) {
+      counter.fetchUnreadCount()
+      requestCounter.fetchunapprovedCount()
+      newEmpCounter.fetchunapprovedCount()
     }
   },
 )
@@ -71,7 +80,7 @@ watch(
     } else {
       counter.reset()
       requestCounter.reset()
-      newEmpCounter.reset() 
+      newEmpCounter.reset()
       clearInterval(pollInterval)
     }
   },

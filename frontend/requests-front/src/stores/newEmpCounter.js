@@ -16,7 +16,7 @@ export const useNewEmpCounterStore = defineStore('newEmpCounter', () => {
       const res = await get('/new-registrations/')
       if (res.ok) {
         const data = await res.json()
-        
+
         unapprovedCount.value = data.filter((m) => !m.is_active).length
       }
     } catch (error) {
