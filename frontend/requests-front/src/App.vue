@@ -63,7 +63,11 @@ watch(
       counter.fetchUnreadCount()
       requestCounter.fetchunapprovedCount()
       newEmpCounter.fetchunapprovedCount()
-      pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
+      pollInterval = setInterval(() => {
+        counter.fetchUnreadCount()
+        requestCounter.fetchunapprovedCount()
+        newEmpCounter.fetchunapprovedCount()
+      }, 60000) // every 60s
     } else {
       counter.reset()
       requestCounter.reset()
@@ -73,6 +77,18 @@ watch(
   },
   { immediate: true },
 )
+// Add this once in App.vue, outside the watch
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    intervals.forEach(clearInterval)
+  } else if (auth.is_logged_in) {
+    // Refetch immediately when tab becomes visible again
+    counter.fetchUnreadCount()
+    requestCounter.fetchunapprovedCount()
+    newEmpCounter.fetchunapprovedCount()
+  }
+})
+
 const handleLogout = () => {
   auth.logout()
   router.push('/login')
