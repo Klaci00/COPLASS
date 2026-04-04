@@ -34,8 +34,8 @@ class AccessRightInline(admin.TabularInline):
     extra = 0
 
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ('firstname', 'lastname', 'hr_id', 'department')
-    search_fields = ('firstname', 'lastname', 'hr_id', 'department')
+    list_display = ('firstname', 'lastname', 'hr_id', 'department', 'supervisor')
+    search_fields = ('firstname', 'lastname', 'hr_id', 'department', 'supervisor__firstname', 'supervisor__lastname', 'supervisor__hr_id')
     inlines = [CardInline, AccessRightInline]
     filter_horizontal = ('deputy',)  # For ManyToManyField deputy
 

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from './auth'
 
-export const useRequestCounterStore = defineStore('requestCounter', () => {
+export const useNewEmpCounterStore = defineStore('newEmpCounter', () => {
   const unapprovedCount = ref(0)
 
   const fetchunapprovedCount = async () => {
@@ -13,10 +13,11 @@ export const useRequestCounterStore = defineStore('requestCounter', () => {
     if (!auth.is_logged_in) return // ✅ guard: don't fetch if not logged in
 
     try {
-      const res = await get('/access-right-requests/')
+      const res = await get('/new-registrations/')
       if (res.ok) {
         const data = await res.json()
-        unapprovedCount.value = data.filter((m) => !m.approved).length
+        
+        unapprovedCount.value = data.filter((m) => !m.is_active).length
       }
     } catch (error) {
       console.error('Failed to fetch unapproved request count', error)

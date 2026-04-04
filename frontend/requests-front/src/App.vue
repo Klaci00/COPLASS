@@ -13,7 +13,7 @@
             <span v-if="counter.unreadCount > 0" class="badge">{{ counter.unreadCount }}</span>
           </router-link>
           <template v-if="auth.is_supervisor">
-            <router-link to="/new-employees">New Employees</router-link>
+            <router-link to="/new-employees">New Employees<span v-if="newEmpCounter.unapprovedCount > 0" class="badge">{{ newEmpCounter.unapprovedCount }}</span></router-link>
           </template>
           <button class="btn-logout" @click="handleLogout">Logout</button>
         </template>
@@ -36,11 +36,13 @@ import { watch } from 'vue'
 import { useAuthStore } from './stores/auth'
 import { useRequestCounterStore } from './stores/requestCounter'
 import { useMessageCounterStore } from './stores/messageCounter'
+import { useNewEmpCounterStore } from './stores/newEmpCounter'
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const counter = useMessageCounterStore()
 const requestCounter = useRequestCounterStore()
+const newEmpCounter = useNewEmpCounterStore()
 let pollInterval = null
 // On route change
 watch(
@@ -48,6 +50,7 @@ watch(
   () => {
     if (auth.is_logged_in) {counter.fetchUnreadCount()
                             requestCounter.fetchunapprovedCount()
+                            newEmpCounter.fetchunapprovedCount()
     }
   },
 )
@@ -59,10 +62,12 @@ watch(
     if (loggedIn) {
       counter.fetchUnreadCount()
       requestCounter.fetchunapprovedCount()
+      newEmpCounter.fetchunapprovedCount()
       pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
     } else {
       counter.reset()
       requestCounter.reset()
+      newEmpCounter.reset() 
       clearInterval(pollInterval)
     }
   },
