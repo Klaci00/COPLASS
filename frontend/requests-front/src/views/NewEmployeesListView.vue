@@ -23,7 +23,6 @@
     </div>
 
     <!-- List -->
-    <ul v-else class="request-list">
       <TransitionGroup name="fade-slide" tag="ul" class="request-list">
       <li v-for="emp in employees" :key="emp.id" class="request-card">
         <div class="request-card-header">
@@ -53,7 +52,7 @@
         </p>
       </li>
       </TransitionGroup>
-    </ul>
+
   </div>
 </template>
 
