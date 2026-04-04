@@ -7,7 +7,7 @@
         <template v-if="auth.is_logged_in">
           <router-link to="/dashboard">Dashboard</router-link>
           <router-link to="/access-right-requests">Access Requests</router-link>
-          <router-link to="/access-right-requests/list">Request List</router-link>
+          <router-link to="/access-right-requests/list">Request List<span v-if="requestCounter.unapprovedCount > 0" class="badge">{{ requestCounter.unapprovedCount }}</span></router-link>
           <router-link to="/messages">
             Messages
             <span v-if="counter.unreadCount > 0" class="badge">{{ counter.unreadCount }}</span>
@@ -34,17 +34,21 @@
 import { useRouter, useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { useAuthStore } from './stores/auth'
+import { useRequestCounterStore } from './stores/requestCounter'
 import { useMessageCounterStore } from './stores/messageCounter'
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const counter = useMessageCounterStore()
+const requestCounter = useRequestCounterStore()
 let pollInterval = null
 // On route change
 watch(
   () => route.path,
   () => {
-    if (auth.is_logged_in) counter.fetchUnreadCount()
+    if (auth.is_logged_in) {counter.fetchUnreadCount()
+                            requestCounter.fetchunapprovedCount()
+    }
   },
 )
 
@@ -54,9 +58,11 @@ watch(
   (loggedIn) => {
     if (loggedIn) {
       counter.fetchUnreadCount()
+      requestCounter.fetchunapprovedCount()
       pollInterval = setInterval(counter.fetchUnreadCount, 60000) // every 60s
     } else {
       counter.reset()
+      requestCounter.reset()
       clearInterval(pollInterval)
     }
   },

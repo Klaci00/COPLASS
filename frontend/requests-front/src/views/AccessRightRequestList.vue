@@ -74,9 +74,11 @@
 import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
+import { useRequestCounterStore } from '@/stores/requestCounter'
 
 const { get, post } = useApi()
 const auth = useAuthStore()
+const requestCounter = useRequestCounterStore()
 
 const requests = ref([])
 const isLoading = ref(true)
@@ -99,6 +101,7 @@ onMounted(async () => {
 
 const approve = async (req) => {
   approvingId.value = req.id
+  requestCounter.decrement()
   delete approveError.value[req.id]
 
   try {
