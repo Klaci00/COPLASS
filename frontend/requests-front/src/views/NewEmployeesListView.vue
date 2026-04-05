@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h1>Newly Registered Employees</h1>
-      <router-link to="/new-employees/new" class="btn-primary"> + Register Employee </router-link>
+      <router-link to="/register" class="btn-primary"> + Register Employee </router-link>
     </div>
 
     <!-- Loading -->
@@ -17,7 +17,7 @@
     <!-- Empty -->
     <div v-else-if="employees.length === 0" class="state-box empty">
       <p>No new employees found.</p>
-      <router-link to="/new-employees/new" class="btn-primary">
+      <router-link to="/register" class="btn-primary">
         Register a new employee
       </router-link>
     </div>

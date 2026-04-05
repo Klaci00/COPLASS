@@ -215,9 +215,9 @@ document.addEventListener('visibilitychange', () => {
 })
 
 const handleLogout = () => {
-  auth.logout()
   router.push('/login')
-}
+  auth.logout()
+  }
 </script>
 
 <style>

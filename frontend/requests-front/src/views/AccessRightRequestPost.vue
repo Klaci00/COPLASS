@@ -48,7 +48,7 @@
       <p v-if="submitError" class="error">{{ submitError }}</p>
       <p v-if="submitSuccess" class="success">Request created successfully!</p>
 
-      <button type="submit" :disabled="isSubmitting">
+      <button type="submit" :disabled="isSubmitting" id="subButt">
         {{ isSubmitting ? 'Submitting...' : 'Submit Request' }}
       </button>
     </form>
@@ -146,9 +146,12 @@ const submitRequest = async () => {
   max-width: 500px;
   margin: 0 auto;
   padding: 20px;
-  background: #fff;
+  background: var(--color-surface-2);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.form-container.dark{
+  background: var(--color-surface-2);
 }
 .form-group {
   margin-bottom: 15px;
@@ -165,7 +168,7 @@ const submitRequest = async () => {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-button {
+button, #subButt {
   width: 100%;
   padding: 10px;
   background-color: #42b983;
@@ -173,6 +176,13 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  
+}
+#subButt:hover {
+  background-color: #369870;
+}
+#subButt.dark{
+background-color: var(--color-danger);
 }
 button:disabled {
   background-color: #a0d8c0;

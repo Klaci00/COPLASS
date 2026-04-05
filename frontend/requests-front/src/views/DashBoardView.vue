@@ -1,49 +1,34 @@
 <template>
-  <div class="dashboard-container">
-    <h2>Welcome to your Dashboard!</h2>
-    <p>You have successfully logged in and received a token from Django.</p>
-
-    <button @click="handleLogout" class="logout-btn">Logout</button>
+  <div class="dashboard">
+    <h1>Dashboard</h1>
+    <p>Welcome back, {{ auth.display_name }}.</p>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
-const router = useRouter()
-
-const handleLogout = () => {
-  // 1. Remove the token from local storage
-  localStorage.removeItem('token')
-  localStorage.removeItem('is_logged_in')
-
-  // 2. Redirect the user back to the login page
-  router.push('/login')
-}
+const auth = useAuthStore()
 </script>
 
 <style scoped>
-.dashboard-container {
-  text-align: center;
-  margin-top: 50px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+.dashboard {
+  padding: 32px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-.logout-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+.dashboard h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
 }
 
-.logout-btn:hover {
-  background-color: #c82333;
+.dashboard p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
 }
 </style>
