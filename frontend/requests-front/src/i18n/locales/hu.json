@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "dashboard": "Vezérlőpult",
+    "accessRequests": "Hozzáférési kérelmek",
+    "requestList": "Kérelmi lista",
+    "messages": "Üzenetek",
+    "newEmployees": "Új alkalmazottak",
+    "logout": "Kijelentkezés"
+  },
+  "messages": {
+    "title": "Üzenetek",
+    "unread": "{count} olvasatlan",
+    "empty": "Még nincsenek üzenetek.",
+    "loading": "Üzenetek betöltése…",
+    "new": "Új",
+    "read": "Olvasott"
+  }
+}

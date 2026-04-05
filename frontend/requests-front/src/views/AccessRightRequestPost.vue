@@ -150,7 +150,7 @@ const submitRequest = async () => {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.form-container.dark{
+.form-container.dark {
   background: var(--color-surface-2);
 }
 .form-group {
@@ -168,7 +168,8 @@ const submitRequest = async () => {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-button, #subButt {
+button,
+#subButt {
   width: 100%;
   padding: 10px;
   background-color: #42b983;
@@ -176,13 +177,12 @@ button, #subButt {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  
 }
 #subButt:hover {
   background-color: #369870;
 }
-#subButt.dark{
-background-color: var(--color-danger);
+#subButt.dark {
+  background-color: var(--color-danger);
 }
 button:disabled {
   background-color: #a0d8c0;

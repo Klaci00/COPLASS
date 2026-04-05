@@ -23,22 +23,22 @@
       <!-- Nav links (logged in) -->
       <template v-if="auth.is_logged_in">
         <div class="navbar-links">
-          <router-link to="/dashboard">Dashboard</router-link>
-          <router-link to="/access-right-requests">Access Requests</router-link>
+          <router-link to="/dashboard">{{ t('nav.dashboard') }}</router-link>
+          <router-link to="/access-right-requests">{{ t('nav.accessRequests') }}</router-link>
           <router-link to="/access-right-requests/list">
-            Request List
+            {{ t('nav.requestList') }}
             <span v-if="requestCounter.unapprovedCount > 0" class="badge">
               {{ requestCounter.unapprovedCount }}
             </span>
           </router-link>
           <router-link to="/messages">
-            Messages
+            {{ t('nav.messages') }}
             <span v-if="counter.unreadCount > 0" class="badge">
               {{ counter.unreadCount }}
             </span>
           </router-link>
           <router-link v-if="auth.is_supervisor" to="/new-employees">
-            New Employees
+            {{ t('nav.newEmployees') }}
             <span v-if="newEmpCounter.unapprovedCount > 0" class="badge">
               {{ newEmpCounter.unapprovedCount }}
             </span>
@@ -53,9 +53,13 @@
             <span class="user-avatar" aria-hidden="true">
               {{ auth.user_name ? auth.user_name[0].toUpperCase() : '?' }}
             </span>
-            <span class="user-name">{{ auth.display_name }}</span>
+            <span class="user-name">{{ t('nav.logout') }}</span>
           </div>
           <div class="navbar-divider" aria-hidden="true" />
+          <select class="lang-switcher" v-model="locale" @change="saveLang">
+            <option value="en">EN</option>
+            <option value="hu">HU</option>
+          </select>
           <!-- Theme toggle -->
           <button
             class="btn-icon"
@@ -66,7 +70,7 @@
             <svg
               v-if="theme.isDark"
               width="18"
-              height="18"
+              7height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -153,6 +157,7 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { useAuthStore } from './stores/auth'
@@ -161,6 +166,10 @@ import { useMessageCounterStore } from './stores/messageCounter'
 import { useNewEmpCounterStore } from './stores/newEmpCounter'
 import { useTheme } from './composables/theme'
 
+const { t, locale } = useI18n()
+const saveLang = () => {
+  localStorage.setItem('locale', locale.value)
+}
 const theme = useTheme()
 const auth = useAuthStore()
 const router = useRouter()
@@ -217,7 +226,7 @@ document.addEventListener('visibilitychange', () => {
 const handleLogout = () => {
   router.push('/login')
   auth.logout()
-  }
+}
 </script>
 
 <style>
@@ -377,7 +386,20 @@ button,
   background: var(--color-border);
   flex-shrink: 0;
 }
-
+.lang-switcher {
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  cursor: pointer;
+  height: 34px;
+}
+.lang-switcher:hover {
+  border-color: var(--color-primary);
+}
 /* Badge */
 .badge {
   display: inline-flex;

@@ -1,0 +1,19 @@
+"filename", "language", "vue", "JavaScript JSX", "comment", "blank", "total"
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\App.vue", "vue", 476, 0, 7, 34, 517
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\composables\theme.js", "JavaScript JSX", 0, 17, 2, 4, 23
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\composables\useApi.js", "JavaScript JSX", 0, 17, 2, 4, 23
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\constants\storageKeys.js", "JavaScript JSX", 0, 8, 1, 1, 10
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\main.js", "JavaScript JSX", 0, 8, 0, 5, 13
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\router\index.js", "JavaScript JSX", 0, 56, 1, 4, 61
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\stores\auth.js", "JavaScript JSX", 0, 55, 1, 5, 61
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\stores\messageCounter.js", "JavaScript JSX", 0, 28, 0, 8, 36
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\stores\newEmpCounter.js", "JavaScript JSX", 0, 28, 0, 9, 37
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\stores\requestCounter.js", "JavaScript JSX", 0, 28, 0, 8, 36
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\AccessRightRequestList.vue", "vue", 252, 0, 5, 29, 286
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\AccessRightRequestPost.vue", "vue", 173, 0, 4, 20, 197
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\DashBoardView.vue", "vue", 29, 0, 0, 5, 34
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\LoginView.vue", "vue", 75, 0, 0, 8, 83
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\MessagesView.vue", "vue", 216, 0, 4, 30, 250
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\NewEmployeesListView.vue", "vue", 237, 0, 5, 26, 268
+"s:\sandbox\python\COPLASS\frontend\requests-front\src\views\RegisterView.vue", "vue", 119, 0, 1, 13, 133
+"Total", "-", 1577, 245, 33, 213, 2068

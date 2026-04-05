@@ -2,9 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h1>Messages</h1>
-      <span v-if="unreadCount > 0" class="unread-count">
-        {{ unreadCount }} unread
-      </span>
+      <span v-if="unreadCount > 0" class="unread-count"> {{ unreadCount }} unread </span>
     </div>
 
     <!-- Loading -->
@@ -18,10 +16,18 @@
 
     <!-- Empty -->
     <div v-else-if="messages.length === 0" class="state-box empty">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-           stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
       <p>No messages yet.</p>
     </div>
@@ -65,7 +71,7 @@ const messages = ref([])
 const isLoading = ref(true)
 const error = ref('')
 
-const unreadCount = computed(() => messages.value.filter(m => !m.is_read).length)
+const unreadCount = computed(() => messages.value.filter((m) => !m.is_read).length)
 
 onMounted(async () => {
   if (!auth.hr_id) {
@@ -237,7 +243,11 @@ const markAsRead = async (msg) => {
   display: inline-block;
   flex-shrink: 0;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* Mark-as-read fade */
 .fade-slide-leave-active {

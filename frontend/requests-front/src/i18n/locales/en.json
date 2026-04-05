@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "accessRequests": "Access Requests",
+    "requestList": "Request List",
+    "messages": "Messages",
+    "newEmployees": "New Employees",
+    "logout": "Logout"
+  },
+  "messages": {
+    "title": "Messages",
+    "unread": "{count} unread",
+    "empty": "No messages yet.",
+    "loading": "Loading messages…",
+    "new": "New",
+    "read": "Read"
+  }
+}

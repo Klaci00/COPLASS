@@ -17,9 +17,7 @@
     <!-- Empty -->
     <div v-else-if="employees.length === 0" class="state-box empty">
       <p>No new employees found.</p>
-      <router-link to="/register" class="btn-primary">
-        Register a new employee
-      </router-link>
+      <router-link to="/register" class="btn-primary"> Register a new employee </router-link>
     </div>
 
     <!-- List -->
