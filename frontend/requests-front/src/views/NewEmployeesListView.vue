@@ -23,7 +23,7 @@
     </div>
 
     <!-- List -->
-      <TransitionGroup name="fade-slide" tag="ul" class="request-list">
+    <TransitionGroup name="fade-slide" tag="ul" class="request-list">
       <li v-for="emp in employees" :key="emp.id" class="request-card">
         <div class="request-card-header">
           <div class="request-meta">
@@ -51,8 +51,7 @@
           {{ approveError[emp.id] }}
         </p>
       </li>
-      </TransitionGroup>
-
+    </TransitionGroup>
   </div>
 </template>
 
