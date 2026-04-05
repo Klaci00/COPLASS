@@ -23,6 +23,9 @@
               }}</span></router-link
             >
           </template>
+          <button class="btn-theme" @click="theme.toggle()" :aria-label="theme.isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+  {{ theme.isDark ? '☀️' : '🌙' }}
+</button>
           <button class="btn-logout" @click="handleLogout">Logout</button>
         </template>
         <template v-else>
@@ -45,6 +48,9 @@ import { useAuthStore } from './stores/auth'
 import { useRequestCounterStore } from './stores/requestCounter'
 import { useMessageCounterStore } from './stores/messageCounter'
 import { useNewEmpCounterStore } from './stores/newEmpCounter'
+import { useTheme } from './composables/theme'
+
+const theme = useTheme()
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
@@ -59,7 +65,9 @@ watch(
     if (auth.is_logged_in) {
       counter.fetchUnreadCount()
       requestCounter.fetchunapprovedCount()
+      if (auth.is_supervisor) {
       newEmpCounter.fetchunapprovedCount()
+      }
     }
   },
 )
@@ -71,11 +79,14 @@ watch(
     if (loggedIn) {
       counter.fetchUnreadCount()
       requestCounter.fetchunapprovedCount()
-      newEmpCounter.fetchunapprovedCount()
+      if (auth.is_supervisor) {
+      newEmpCounter.fetchunapprovedCount()}
       pollInterval = setInterval(() => {
         counter.fetchUnreadCount()
         requestCounter.fetchunapprovedCount()
-        newEmpCounter.fetchunapprovedCount()
+        if (auth.is_supervisor) {
+          newEmpCounter.fetchunapprovedCount()
+        }
       }, 60000) // every 60s
     } else {
       counter.reset()
@@ -89,12 +100,13 @@ watch(
 // Add this once in App.vue, outside the watch
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    intervals.forEach(clearInterval)
+    pollInterval && clearInterval(pollInterval)
   } else if (auth.is_logged_in) {
     // Refetch immediately when tab becomes visible again
     counter.fetchUnreadCount()
     requestCounter.fetchunapprovedCount()
-    newEmpCounter.fetchunapprovedCount()
+    if (auth.is_supervisor) {
+    newEmpCounter.fetchunapprovedCount()}
   }
 })
 
@@ -119,6 +131,15 @@ const handleLogout = () => {
   --radius: 8px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
 }
+/* Dark mode overrides — only these need to change */
+:root.dark {
+  --color-bg: #0f0f11;
+  --color-surface: #1a1a1e;
+  --color-text: #e8e8ea;
+  --color-text-muted: #9ca3af;
+  --color-border: #2a2a2e;
+}
+
 
 * {
   box-sizing: border-box;
