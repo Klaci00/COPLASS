@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Vezérlőpult",
-    "accessRequests": "Hozzáférési kérelmek",
+    "accessRequests": "Hozzáférési joggal kapcsolatos kérelmek",
     "requestList": "Kérelmi lista",
     "messages": "Üzenetek",
     "newEmployees": "Új alkalmazottak",

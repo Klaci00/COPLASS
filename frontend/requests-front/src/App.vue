@@ -59,6 +59,7 @@
           <select class="lang-switcher" v-model="locale" @change="saveLang">
             <option value="en">EN</option>
             <option value="hu">HU</option>
+            <option value="ar">AR</option>
           </select>
           <!-- Theme toggle -->
           <button
@@ -101,7 +102,7 @@
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
-          <button class="btn-logout" @click="handleLogout">Logout</button>
+          <button class="btn-logout" @click="handleLogout">{{ t('nav.logout') }}</button>
         </div>
       </template>
 
@@ -158,6 +159,7 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { isRtl } from './i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { useAuthStore } from './stores/auth'
@@ -178,6 +180,23 @@ const counter = useMessageCounterStore()
 const requestCounter = useRequestCounterStore()
 const newEmpCounter = useNewEmpCounterStore()
 let pollInterval = null
+
+watch(
+  locale,
+  (newLocale) => {
+    document.documentElement.setAttribute('dir', isRtl(newLocale) ? 'rtl' : 'ltr')
+    document.documentElement.setAttribute('lang', newLocale)
+    // In your locale watcher
+    if (newLocale === 'ar') {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href =
+        'https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700&display=swap'
+      document.head.appendChild(link)
+    }
+  },
+  { immediate: true },
+)
 
 watch(
   () => route.path,
@@ -287,7 +306,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', 'Noto Sans Arabic', system-ui, sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
   min-height: 100dvh;
@@ -296,7 +315,21 @@ body {
     background-color 0.2s ease,
     color 0.2s ease;
 }
-
+/*Language direction support */
+.page-header {
+  padding-inline-start: 24px;
+  text-align: start;
+}
+.unread-dot {
+  margin-inline-end: 7px;
+}
+/* Flex row direction, icon rotation, etc. */
+[dir='rtl'] .navbar-links {
+  flex-direction: row-reverse;
+}
+[dir='rtl'] .chevron-icon {
+  transform: scaleX(-1);
+}
 /* Only interactive elements get transitions */
 a,
 button,

@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "accessRequests": "Access Requests",
+    "accessRequests": "Access Right Requests",
     "requestList": "Request List",
     "messages": "Messages",
     "newEmployees": "New Employees",
