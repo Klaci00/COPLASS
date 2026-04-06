@@ -13,6 +13,44 @@
     "empty": "Még nincsenek üzenetek.",
     "loading": "Üzenetek betöltése…",
     "new": "Új",
-    "read": "Olvasott"
+    "read": "Olvasott",
+    "noMessages": "Még nincsenek üzenetek. Kezdje el az első beszélgetést!"
+  },
+  "dashboard": {
+    "welcome": "Üdv újra, {name}."
+  },
+  "accessRequests": {
+    "create": "Hozzáférési jog megkérése",
+    "securityZone": "Biztonsági zóna",
+    "selectSecurityZone": "-- Nincs kijelölt biztonsági zóna --",
+    "startDate": "Kezdés dátuma",
+    "endDate": "Befejezés dátuma",
+    "supervisor": "Felettes",
+    "selectSupervisor": "-- Nincs kijelölt felettes --",
+    "employee": "Alkalmazott",
+    "selectEmployee": "-- Nincs kijelölt alkalmazott --",
+    "submit": "Kérelem beküldése",
+    "submiting": "Kérelem beküldése…",
+    "title": "Hozzáférési jogok kérése",
+    "listTitle": "Hozzáférési jogkérelmek",
+    "empty": "Még nincs hozzáférési jogkérelem.",
+    "loading": "Hozzáférési jogkérelmek betöltése…",
+    "new": "Új kérelem",
+    "period": "Időszak",
+    "submitted": "Beküldve",
+    "noAccessRequests": "Még nincsenek hozzáférési jogosultság kérelmek.",
+    "createFirst": "Hozza létre az első kérelmét",
+    "approved": "Jóváhagyva",
+    "rejected": "Elutasítva",
+    "pending": "Függőben",
+    "approve": "Jóváhagyás",
+    "reject": "Elutasítás",
+    "approving": "Jóváhagyás…"
+  },
+  "newEmployees": {
+    "title": "Újonnan regisztrált alkalmazottak",
+    "register": "Új alkalmazott regisztrálása",
+    "empty": "Jelenleg nincsenek új alkalmazottak.",
+    "loading": "Új alkalmazottak betöltése…"
   }
 }

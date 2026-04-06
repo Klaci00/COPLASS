@@ -13,6 +13,44 @@
     "empty": "No messages yet.",
     "loading": "Loading messages…",
     "new": "New",
-    "read": "Read"
+    "read": "Read",
+    "noMessages": "No messages yet. Start your first conversation!"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}."
+  },
+  "accessRequests": {
+    "create": "Create Access Right Request",
+    "securityZone": "Security Zone",
+    "selectSecurityZone": "-- No Security Zone Selected --",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "supervisor": "Supervisor",
+    "selectSupervisor": "-- No Supervisor Assigned --",
+    "employee": "Employee",
+    "selectEmployee": "-- No Employee Assigned --",
+    "submit": "Submit Request",
+    "submiting": "Submitting Request…",
+    "title": "Access Right Requests",
+    "listTitle": "Access Right Requests",
+    "empty": "No access right requests yet.",
+    "loading": "Loading access right requests…",
+    "new": "New Request",
+    "period": "Period",
+    "submitted": "Submitted",
+    "noAccessRequests": "No access right requests yet.",
+    "createFirst": "Create your first request",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "pending": "Pending",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approving": "Approving…"
+  },
+  "newEmployees": {
+    "title": "Newly Registered Employees",
+    "register": "Register a New Employee",
+    "empty": "No new employees at the moment.",
+    "loading": "Loading new employees…"
   }
 }

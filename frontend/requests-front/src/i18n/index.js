@@ -13,5 +13,39 @@ export const i18n = createI18n({
   locale: localStorage.getItem('locale') || 'en',
   lang: localStorage.getItem('lang') || 'en',
   fallbackLocale: 'en',
+
   messages: { en, hu, ar },
+  datetimeFormats: {
+    en: {
+      short: { year: 'numeric', month: 'short', day: 'numeric' },
+      datetime: {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      },
+    },
+    hu: {
+      short: { year: 'numeric', month: 'long', day: 'numeric' },
+      datetime: {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      },
+    },
+    ar: {
+      short: { year: 'numeric', month: 'short', day: 'numeric' },
+      datetime: {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      },
+    },
+  },
 })

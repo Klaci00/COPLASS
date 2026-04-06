@@ -1,14 +1,16 @@
 <template>
   <div class="dashboard">
-    <h1>Dashboard</h1>
-    <p>Welcome back, {{ auth.display_name }}.</p>
+    <h1>{{ t('nav.dashboard') }}</h1>
+    <p>{{ t('dashboard.welcome', { name: auth.display_name }) }}</p>
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '../stores/auth'
+import { useI18n } from 'vue-i18n'
 
 const auth = useAuthStore()
+const { t } = useI18n()
 </script>
 
 <style scoped>

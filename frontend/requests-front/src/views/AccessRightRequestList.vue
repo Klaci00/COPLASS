@@ -1,14 +1,14 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h1>Access Right Requests</h1>
+      <h1>{{ t('accessRequests.listTitle') }}</h1>
       <router-link to="/access-right-requests" class="btn-primary"> + New Request </router-link>
     </div>
 
     <!-- Loading -->
     <div v-if="isLoading" class="state-box">
       <span class="spinner" />
-      Loading requests…
+      {{ t('accessRequests.loading') }}
     </div>
 
     <!-- Error -->
@@ -16,9 +16,9 @@
 
     <!-- Empty -->
     <div v-else-if="requests.length === 0" class="state-box empty">
-      <p>No access right requests found.</p>
+      <p>{{ t('accessRequests.noAccessRequests') }}.</p>
       <router-link to="/access-right-requests" class="btn-primary">
-        Create your first request
+        {{ t('accessRequests.createFirst') }}
       </router-link>
     </div>
 
@@ -29,7 +29,7 @@
           <div class="request-meta">
             <span class="zone-name">{{ req.zone_name }}</span>
             <span :class="['status-badge', req.approved ? 'approved' : 'pending']">
-              {{ req.approved ? 'Approved' : 'Pending' }}
+              {{ req.approved ? t('accessRequests.approved') : t('accessRequests.pending') }}
             </span>
           </div>
           <!-- Approve button: only visible to staff, only on pending requests -->
@@ -39,26 +39,28 @@
             :disabled="approvingId === req.id"
             @click="approve(req)"
           >
-            {{ approvingId === req.id ? 'Approving…' : 'Approve' }}
+            {{
+              approvingId === req.id ? t('accessRequests.approving') : t('accessRequests.approve')
+            }}
           </button>
         </div>
 
         <div class="request-card-body">
           <div class="detail-row">
-            <span class="label">Employee</span>
+            <span class="label">{{ t('accessRequests.employee') }}</span>
             <span>{{ req.employee_name }}</span>
           </div>
           <div class="detail-row" v-if="req.supervisor_name">
-            <span class="label">Supervisor</span>
+            <span class="label">{{ t('accessRequests.supervisor') }}</span>
             <span>{{ req.supervisor_name }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Period</span>
-            <span>{{ formatDate(req.start_date) }} → {{ formatDate(req.end_date) }}</span>
+            <span class="label">{{ t('accessRequests.period') }}</span>
+            <span>{{ d(req.start_date, 'short') }} → {{ d(req.end_date, 'short') }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Submitted</span>
-            <span>{{ formatDate(req.created_at) }}</span>
+            <span class="label">{{ t('accessRequests.submitted') }}</span>
+            <span>{{ d(req.created_at, 'short') }}</span>
           </div>
         </div>
 
@@ -75,16 +77,17 @@ import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
 import { useRequestCounterStore } from '@/stores/requestCounter'
+import { useI18n } from 'vue-i18n'
 
 const { get, post } = useApi()
 const auth = useAuthStore()
 const requestCounter = useRequestCounterStore()
-
 const requests = ref([])
 const isLoading = ref(true)
 const error = ref('')
 const approvingId = ref(null) // tracks which row is mid-request
 const approveError = ref({}) // per-row error messages
+const { t, d } = useI18n()
 console.log('Is staff:', auth.is_logged_in, auth.is_staff) // Debugging statement
 
 onMounted(async () => {

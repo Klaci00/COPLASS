@@ -1,14 +1,16 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h1>Messages</h1>
-      <span v-if="unreadCount > 0" class="unread-count"> {{ unreadCount }} unread </span>
+      <h1>{{ t('messages.title') }}</h1>
+      <span v-if="unreadCount > 0" class="unread-count">
+        {{ t('messages.unread', { count: unreadCount }) }}
+      </span>
     </div>
 
     <!-- Loading -->
     <div v-if="isLoading" class="state-box">
       <span class="spinner" />
-      Loading messages…
+      {{ t('messages.loading') }}
     </div>
 
     <!-- Error -->
@@ -29,7 +31,7 @@
       >
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
-      <p>No messages yet.</p>
+      <p>{{ t('messages.noMessages') }}</p>
     </div>
 
     <!-- List -->
@@ -45,10 +47,12 @@
         <div class="msg-header">
           <div class="msg-meta">
             <span v-if="!msg.is_read" class="unread-dot" aria-hidden="true" />
-            <span class="msg-status">{{ msg.is_read ? 'Read' : 'New' }}</span>
+            <span class="msg-status">{{
+              msg.is_read ? t('messages.read') : t('messages.new')
+            }}</span>
           </div>
           <time class="msg-date" :datetime="msg.created_at">
-            {{ new Date(msg.created_at).toLocaleString() }}
+            {{ formattedPeriod(msg) }}
           </time>
         </div>
         <p class="msg-content">{{ msg.content }}</p>
@@ -62,14 +66,17 @@ import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
 import { useMessageCounterStore } from '../stores/messageCounter'
+import { useI18n } from 'vue-i18n'
 
 const auth = useAuthStore()
 const counter = useMessageCounterStore()
 const { get, post } = useApi()
-
+const { t, d } = useI18n()
 const messages = ref([])
 const isLoading = ref(true)
 const error = ref('')
+
+const formattedPeriod = (msg) => `${d(new Date(msg.created_at), 'datetime')} `
 
 const unreadCount = computed(() => messages.value.filter((m) => !m.is_read).length)
 

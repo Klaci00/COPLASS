@@ -1,14 +1,16 @@
 <template>
   <div class="page">
     <div class="page-header">
-      <h1>Newly Registered Employees</h1>
-      <router-link to="/register" class="btn-primary"> + Register Employee </router-link>
+      <h1>{{ t('newEmployees.title') }}</h1>
+      <router-link to="/register" class="btn-primary">
+        + {{ t('newEmployees.register') }}
+      </router-link>
     </div>
 
     <!-- Loading -->
     <div v-if="isLoading" class="state-box">
       <span class="spinner" />
-      Loading requests…
+      {{ t('newEmployees.loading') }}
     </div>
 
     <!-- Error -->
@@ -16,8 +18,10 @@
 
     <!-- Empty -->
     <div v-else-if="employees.length === 0" class="state-box empty">
-      <p>No new employees found.</p>
-      <router-link to="/register" class="btn-primary"> Register a new employee </router-link>
+      <p>{{ t('newEmployees.empty') }}</p>
+      <router-link to="/register" class="btn-primary">
+        {{ t('newEmployees.register') }}
+      </router-link>
     </div>
 
     <!-- List -->
@@ -34,13 +38,15 @@
             :disabled="approvingId === emp.id"
             @click="approve(emp)"
           >
-            {{ approvingId === emp.id ? 'Approving…' : 'Approve' }}
+            {{
+              approvingId === emp.id ? t('accessRequests.approving') : t('accessRequests.approve')
+            }}
           </button>
         </div>
 
         <div class="request-card-body">
           <div class="detail-row">
-            <span class="label">Employee</span>
+            <span class="label">{{ t('accessRequests.employee') }}</span>
             <span>{{ emp.name }}</span>
           </div>
         </div>
@@ -58,7 +64,9 @@ import { ref, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
 import { useNewEmpCounterStore } from '../stores/newEmpCounter'
+import { useI18n } from 'vue-i18n'
 
+const { d, t } = useI18n()
 const { get, post } = useApi()
 const auth = useAuthStore()
 const newEmpCounter = useNewEmpCounterStore()
