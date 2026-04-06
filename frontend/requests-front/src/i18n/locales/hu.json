@@ -52,5 +52,15 @@
     "register": "Új alkalmazott regisztrálása",
     "empty": "Jelenleg nincsenek új alkalmazottak.",
     "loading": "Új alkalmazottak betöltése…"
+  },
+  "login": {
+    "title": "Üdvözöljük újra!",
+    "hr-id": "HR-azonosító",
+    "password": "Jelszó",
+    "signin": "Bejelentkezés",
+    "singingin": "Bejelentkezés…",
+    "signinwith": "Bejelentkezés a HR-azonosítóval",
+    "noacc": "Nincs fiókja?",
+    "reghere": "Regisztráljon itt"
   }
 }

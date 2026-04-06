@@ -109,6 +109,12 @@
       <!-- Guest links -->
       <template v-else>
         <div class="navbar-actions">
+          <select class="lang-switcher" v-model="locale" @change="saveLang">
+            <option value="en">EN</option>
+            <option value="hu">HU</option>
+            <option value="ar">AR</option>
+          </select>
+
           <button
             class="btn-icon"
             @click="theme.toggle()"

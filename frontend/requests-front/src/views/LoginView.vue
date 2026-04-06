@@ -1,11 +1,11 @@
 <template>
   <div class="auth-card">
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in with your HR ID</p>
+    <h1>{{ t('login.title') }}</h1>
+    <p class="subtitle">{{ t('login.signinwith') }}</p>
 
     <form @submit.prevent="handleLogin">
       <div class="form-group">
-        <label for="username">HR ID</label>
+        <label for="username">{{ t('login.hr_id') }}</label>
         <input
           id="username"
           v-model="username"
@@ -16,7 +16,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">{{ t('login.password') }}</label>
         <input
           id="password"
           v-model="password"
@@ -30,11 +30,13 @@
       <p v-if="errorMessage" class="feedback error">{{ errorMessage }}</p>
 
       <button type="submit" class="btn-primary" :disabled="isLoading">
-        {{ isLoading ? 'Signing in…' : 'Sign in' }}
+        {{ isLoading ? t('login.singingin') : t('login.signin') }}
       </button>
     </form>
 
-    <p class="auth-footer">No account? <router-link to="/register">Register here</router-link></p>
+    <p class="auth-footer">
+      {{ t('login.noacc') }} <router-link to="/register">{{ t('login.reghere') }}</router-link>
+    </p>
   </div>
 </template>
 
@@ -43,7 +45,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const { post } = useApi()
 const router = useRouter()

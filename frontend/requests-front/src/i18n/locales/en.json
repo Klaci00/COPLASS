@@ -52,5 +52,15 @@
     "register": "Register a New Employee",
     "empty": "No new employees at the moment.",
     "loading": "Loading new employees…"
+  },
+  "login": {
+    "title": "Welcome Back!",
+    "hr_id": "HR-ID",
+    "password": "Password",
+    "signin": "Sign in",
+    "singingin": "Signing in…",
+    "signinwith": "Sign in with your HR-ID",
+    "noacc": "No account?",
+    "reghere": "Register here"
   }
 }
