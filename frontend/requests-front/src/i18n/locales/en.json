@@ -45,7 +45,10 @@
     "pending": "Pending",
     "approve": "Approve",
     "reject": "Reject",
-    "approving": "Approving…"
+    "approving": "Approving…",
+    "confirmQuestion": "Approve this request?",
+"confirmYes": "Yes, approve",
+"confirmNo": "Cancel"
   },
   "newEmployees": {
     "title": "Newly Registered Employees",

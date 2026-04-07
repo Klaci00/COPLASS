@@ -46,7 +46,10 @@
     "pending": "قيد الانتظار",
     "approve": "الموافقة",
     "reject": "الرفض",
-    "approving": "جاري الموافقة..."
+    "approving": "جاري الموافقة...",
+    "confirmQuestion": "هل تريد الموافقة على هذا الطلب؟",
+"confirmYes": "نعم، وافق",
+"confirmNo": "إلغاء"
   },
   "newEmployees": {
     "title": "الموظفون المسجلون حديثاً",

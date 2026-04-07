@@ -25,6 +25,25 @@
     <!-- List -->
     <ul v-else class="request-list">
       <li v-for="req in requests" :key="req.id" class="request-card">
+                <!-- Confirmation overlay — covers the right half of the card -->
+        <Transition name="confirm">
+          <div v-if="confirmingId === req.id" class="confirm-overlay">
+            <p class="confirm-question">{{ t('accessRequests.confirmQuestion') }}</p>
+            <div class="confirm-actions">
+              <button
+                class="btn-confirm-yes"
+                :disabled="approvingId === req.id"
+                @click="approve(req)"
+              >
+                {{ approvingId === req.id ? t('accessRequests.approving') : t('accessRequests.confirmYes') }}
+              </button>
+              <button class="btn-confirm-no" @click="confirmingId = null">
+                {{ t('accessRequests.confirmNo') }}
+              </button>
+            </div>
+          </div>
+        </Transition>
+
         <div class="request-card-header">
           <div class="request-meta">
             <span class="zone-name">{{ req.zone_name }}</span>
@@ -37,7 +56,7 @@
             v-if="auth.is_supervisor && !req.approved"
             class="btn-approve"
             :disabled="approvingId === req.id"
-            @click="approve(req)"
+            @click="confirmingId = req.id"
           >
             {{
               approvingId === req.id ? t('accessRequests.approving') : t('accessRequests.approve')
@@ -86,9 +105,9 @@ const requests = ref([])
 const isLoading = ref(true)
 const error = ref('')
 const approvingId = ref(null) // tracks which row is mid-request
+const confirmingId = ref(null)
 const approveError = ref({}) // per-row error messages
 const { t, d } = useI18n()
-console.log('Is staff:', auth.is_logged_in, auth.is_staff) // Debugging statement
 
 onMounted(async () => {
   try {
@@ -105,6 +124,7 @@ onMounted(async () => {
 const approve = async (req) => {
   approvingId.value = req.id
   requestCounter.decrement()
+  confirmingId.value = null
   delete approveError.value[req.id]
 
   try {
@@ -182,6 +202,88 @@ const formatDate = (dateStr) =>
   flex-direction: column;
   gap: 12px;
 }
+/* Card — must be relative so the overlay can position inside it */
+.request-card {
+  position: relative;
+  overflow: hidden;             /* clips the overlay to the card's rounded corners */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Confirmation overlay ───────────────────────────────── */
+.confirm-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;           /* anchored to the right half */
+  width: 55%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: color-mix(in oklab, var(--color-surface) 92%, var(--color-primary));
+  border-inline-start: 1px solid var(--color-border);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+
+.confirm-question {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-confirm-yes {
+  padding: 6px 14px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-confirm-yes:hover:not(:disabled) { background: var(--color-primary-hover); }
+.btn-confirm-yes:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-confirm-no {
+  padding: 6px 14px;
+  background: none;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-confirm-no:hover {
+  color: var(--color-text);
+  border-color: color-mix(in oklab, var(--color-text) 30%, transparent);
+}
+
+/* Slide in from the right */
+.confirm-enter-active,
+.confirm-leave-active {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease;
+}
+.confirm-enter-from,
+.confirm-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
 
 .request-card {
   background: var(--color-surface);

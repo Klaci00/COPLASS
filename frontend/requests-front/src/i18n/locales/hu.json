@@ -45,7 +45,10 @@
     "pending": "Függőben",
     "approve": "Jóváhagyás",
     "reject": "Elutasítás",
-    "approving": "Jóváhagyás…"
+    "approving": "Jóváhagyás…",
+    "confirmQuestion": "Jóváhagyja ezt a kérelmet?",
+"confirmYes": "Igen, jóváhagyom",
+"confirmNo": "Mégsem"
   },
   "newEmployees": {
     "title": "Újonnan regisztrált alkalmazottak",
