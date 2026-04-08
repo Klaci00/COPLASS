@@ -65,5 +65,26 @@
     "signinwith": "Bejelentkezés a HR-azonosítóval",
     "noacc": "Nincs fiókja?",
     "reghere": "Regisztráljon itt"
+  },
+  "register": {
+    "title": "Alkalmazott Regisztráció",
+    "subtitle": "Hozzon létre egy új alkalmazotti fiókot, és rendelje hozzá a megfelelő részleget és felügyelőt.",
+    "hr_id": "HR-azonosító",
+    "first_name": "Keresztnév",
+    "last_name": "Vezetéknév",
+    "date_of_birth": "Születési dátum",
+    "department": "Részleg",
+    "nodept": "-- Nincs hozzárendelt részleg --",
+    "supervisor": "Felettes",
+    "nosup": "-- Nincs hozzárendelt felettes --",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "confirm_password": "Jelszó megerősítése",
+    "password_mismatch": "A jelszavak nem egyeznek",
+    "register": "Alkalmazott regisztrálása",
+    "registering": "Regisztráció…",
+    "success": "Sikeres regisztráció!",
+    "haveacc": "Már van fiókja?",
+    "loginhere": "Jelentkezzen be itt"
   }
 }
