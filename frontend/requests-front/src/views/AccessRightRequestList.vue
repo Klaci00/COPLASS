@@ -2,10 +2,15 @@
   <div class="page">
     <div class="page-header">
       <h1>{{ t('accessRequests.listTitle') }}</h1>
-      <router-link to="/access-right-requests" class="btn-primary"> + New Request </router-link>
+      <router-link to="/access-right-requests" class="btn-primary"> + {{t('accessRequests.listTitle')}} </router-link>
     </div>
+<!-- Two buttons for two subviews -->
+   <div class="options-card">
+    <button @click="myReqs = true" class="btn-primary" id="my">{{ t('accessRequests.myReqs') }}</button>
+    <button @click="myReqs = false" class="btn-primary" id="others">{{ t('accessRequests.myReqs') }}</button>
+  </div>
 
-    <!-- Loading -->
+   <!-- Loading -->
     <div v-if="isLoading" class="state-box">
       <span class="spinner" />
       {{ t('accessRequests.loading') }}
@@ -20,8 +25,7 @@
       <router-link to="/access-right-requests" class="btn-primary">
         {{ t('accessRequests.createFirst') }}
       </router-link>
-    </div>
-
+    </div> 
     <!-- List -->
     <ul v-else class="request-list">
       <li v-for="req in requests" :key="req.id" class="request-card">
@@ -92,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAuthStore } from '../stores/auth'
 import { useRequestCounterStore } from '@/stores/requestCounter'
@@ -108,17 +112,32 @@ const approvingId = ref(null) // tracks which row is mid-request
 const confirmingId = ref(null)
 const approveError = ref({}) // per-row error messages
 const { t, d } = useI18n()
+const myReqs = ref(true)
 
-onMounted(async () => {
+const getReqs = async () => {
   try {
-    const res = await get('/access-right-requests/')
-    if (!res.ok) throw new Error('Failed to load requests.')
-    requests.value = await res.json()
+    if (myReqs.value) {
+      const res = await get('/my-access-right-requests/')
+      if (!res.ok) throw new Error('Failed to load your requests.')
+      requests.value = await res.json()
+    } else {
+      const res = await get('/access-right-requests/')
+      if (!res.ok) throw new Error('Failed to load requests.')
+      requests.value = await res.json()
+    }
   } catch (err) {
     error.value = err.message
   } finally {
     isLoading.value = false
   }
+}
+onMounted(async () => {
+  await getReqs()
+})
+
+watch(myReqs, async () => {
+  isLoading.value = true
+  await getReqs()
 })
 
 const approve = async (req) => {
@@ -142,12 +161,7 @@ const approve = async (req) => {
   }
 }
 
-const formatDate = (dateStr) =>
-  new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
+
 </script>
 
 <style scoped>
@@ -370,6 +384,27 @@ const formatDate = (dateStr) =>
   margin-top: 8px;
   font-size: 0.8rem;
   color: var(--color-error);
+}
+.options-card{
+  
+  position: relative;
+  height: 45%;
+  overflow: hidden;             /* clips the overlay to the card's rounded corners */
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+  
+}
+#my{
+  float: left;
+  position: relative;
+  left: 10%;
+}
+#others{
+  position: relative;
+  float: right;
+  right: 10%;
 }
 
 /* Loading spinner */

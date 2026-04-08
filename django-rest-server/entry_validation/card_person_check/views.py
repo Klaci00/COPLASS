@@ -118,6 +118,13 @@ class AccessRightRequestListView(APIView):
 
         return Response(AccessRightRequestSerializer(requests, many=True).data)
 
+class AccessRightMyRequestListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        requests = AccessRightRequest.objects.filter(employee=user).order_by('-created_at')
+        return Response(AccessRightRequestSerializer(requests, many=True).data)
 class ApproveAccessRightRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
