@@ -47,8 +47,8 @@
     "reject": "Elutasítás",
     "approving": "Jóváhagyás…",
     "confirmQuestion": "Jóváhagyja ezt a kérelmet?",
-"confirmYes": "Igen, jóváhagyom",
-"confirmNo": "Mégsem"
+    "confirmYes": "Igen, jóváhagyom",
+    "confirmNo": "Mégsem"
   },
   "newEmployees": {
     "title": "Újonnan regisztrált alkalmazottak",

@@ -2,15 +2,21 @@
   <div class="page">
     <div class="page-header">
       <h1>{{ t('accessRequests.listTitle') }}</h1>
-      <router-link to="/access-right-requests" class="btn-primary"> + {{t('accessRequests.listTitle')}} </router-link>
+      <router-link to="/access-right-requests" class="btn-primary">
+        + {{ t('accessRequests.listTitle') }}
+      </router-link>
     </div>
-<!-- Two buttons for two subviews -->
-   <div class="options-card">
-    <button @click="myReqs = true" class="btn-primary" id="my">{{ t('accessRequests.myReqs') }}</button>
-    <button @click="myReqs = false" class="btn-primary" id="others">{{ t('accessRequests.myReqs') }}</button>
-  </div>
+    <!-- Two buttons for two subviews -->
+    <div class="options-card">
+      <button @click="myReqs = true" class="btn-primary" id="my">
+        {{ t('accessRequests.myReqs') }}
+      </button>
+      <button @click="myReqs = false" class="btn-primary" id="others">
+        {{ t('accessRequests.myReqs') }}
+      </button>
+    </div>
 
-   <!-- Loading -->
+    <!-- Loading -->
     <div v-if="isLoading" class="state-box">
       <span class="spinner" />
       {{ t('accessRequests.loading') }}
@@ -25,11 +31,11 @@
       <router-link to="/access-right-requests" class="btn-primary">
         {{ t('accessRequests.createFirst') }}
       </router-link>
-    </div> 
+    </div>
     <!-- List -->
     <ul v-else class="request-list">
       <li v-for="req in requests" :key="req.id" class="request-card">
-                <!-- Confirmation overlay — covers the right half of the card -->
+        <!-- Confirmation overlay — covers the right half of the card -->
         <Transition name="confirm">
           <div v-if="confirmingId === req.id" class="confirm-overlay">
             <p class="confirm-question">{{ t('accessRequests.confirmQuestion') }}</p>
@@ -39,7 +45,11 @@
                 :disabled="approvingId === req.id"
                 @click="approve(req)"
               >
-                {{ approvingId === req.id ? t('accessRequests.approving') : t('accessRequests.confirmYes') }}
+                {{
+                  approvingId === req.id
+                    ? t('accessRequests.approving')
+                    : t('accessRequests.confirmYes')
+                }}
               </button>
               <button class="btn-confirm-no" @click="confirmingId = null">
                 {{ t('accessRequests.confirmNo') }}
@@ -160,8 +170,6 @@ const approve = async (req) => {
     approvingId.value = null
   }
 }
-
-
 </script>
 
 <style scoped>
@@ -219,7 +227,7 @@ const approve = async (req) => {
 /* Card — must be relative so the overlay can position inside it */
 .request-card {
   position: relative;
-  overflow: hidden;             /* clips the overlay to the card's rounded corners */
+  overflow: hidden; /* clips the overlay to the card's rounded corners */
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -231,7 +239,7 @@ const approve = async (req) => {
 .confirm-overlay {
   position: absolute;
   top: 0;
-  right: 0;           /* anchored to the right half */
+  right: 0; /* anchored to the right half */
   width: 55%;
   height: 100%;
   display: flex;
@@ -268,8 +276,13 @@ const approve = async (req) => {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-confirm-yes:hover:not(:disabled) { background: var(--color-primary-hover); }
-.btn-confirm-yes:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-confirm-yes:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+.btn-confirm-yes:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .btn-confirm-no {
   padding: 6px 14px;
@@ -289,15 +302,15 @@ const approve = async (req) => {
 /* Slide in from the right */
 .confirm-enter-active,
 .confirm-leave-active {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.2s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.2s ease;
 }
 .confirm-enter-from,
 .confirm-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
-
 
 .request-card {
   background: var(--color-surface);
@@ -385,23 +398,21 @@ const approve = async (req) => {
   font-size: 0.8rem;
   color: var(--color-error);
 }
-.options-card{
-  
+.options-card {
   position: relative;
   height: 45%;
-  overflow: hidden;             /* clips the overlay to the card's rounded corners */
+  overflow: hidden; /* clips the overlay to the card's rounded corners */
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 16px 20px;
   box-shadow: var(--shadow-sm);
-  
 }
-#my{
+#my {
   float: left;
   position: relative;
   left: 10%;
 }
-#others{
+#others {
   position: relative;
   float: right;
   right: 10%;

@@ -47,8 +47,8 @@
     "reject": "Reject",
     "approving": "Approving…",
     "confirmQuestion": "Approve this request?",
-"confirmYes": "Yes, approve",
-"confirmNo": "Cancel"
+    "confirmYes": "Yes, approve",
+    "confirmNo": "Cancel"
   },
   "newEmployees": {
     "title": "Newly Registered Employees",

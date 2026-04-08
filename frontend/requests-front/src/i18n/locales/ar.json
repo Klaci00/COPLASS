@@ -48,8 +48,8 @@
     "reject": "الرفض",
     "approving": "جاري الموافقة...",
     "confirmQuestion": "هل تريد الموافقة على هذا الطلب؟",
-"confirmYes": "نعم، وافق",
-"confirmNo": "إلغاء"
+    "confirmYes": "نعم، وافق",
+    "confirmNo": "إلغاء"
   },
   "newEmployees": {
     "title": "الموظفون المسجلون حديثاً",

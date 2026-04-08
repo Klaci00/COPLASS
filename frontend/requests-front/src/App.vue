@@ -71,7 +71,7 @@
             <svg
               v-if="theme.isDark"
               width="18"
-              7height="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
