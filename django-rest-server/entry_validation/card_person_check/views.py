@@ -40,10 +40,8 @@ class CheckCardPersonView(APIView):
 
         card = Card.objects.filter(card_number=data["card_number"]).first()
         employee = card.employee if card else None
-        gate_obj = Gate.objects.filter(gate_number=data["gate"]).first()
-        direction = data["direction"]
-        result = check_card_person(card, employee, gate_obj, direction)
-
+        gate_obj = Gate.objects.filter(id=data["gate"]).first()
+        result = check_card_person(card, employee, gate_obj)
         if not result.allowed:
             denied_payload = {"control": True} if result.control else result.message
             response = Response({"denied": denied_payload}, status=result.status_code)
@@ -56,8 +54,8 @@ class CheckCardPersonView(APIView):
             control=result.control,
             allowed=result.allowed,
             warning=result.message if not result.allowed else None,
-            from_zone=gate_obj.outside_zone if direction == 0 else gate_obj.inside_zone,
-            to_zone=gate_obj.inside_zone if direction == 0 else gate_obj.outside_zone,
+            from_zone=gate_obj.current_zone,
+            to_zone=gate_obj.opposite_zone
         )
         gate_event.save()
 

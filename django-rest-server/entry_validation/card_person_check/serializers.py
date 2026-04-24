@@ -18,16 +18,10 @@ class LoginSerializer(serializers.Serializer):
 class CheckCardPersonSerializer(serializers.Serializer):
     card_number = serializers.CharField(required=True)
     gate        = serializers.IntegerField(required=True)
-    direction   = serializers.IntegerField(default=0)
     timestamp   = serializers.DateTimeField(required=True)
 
-    def validate_direction(self, value):
-        if value not in (0, 1):
-            raise serializers.ValidationError("Direction must be 0 (entry) or 1 (exit).")
-        return value
-
     def validate_gate(self, value):
-        if not Gate.objects.filter(gate_number=value).exists():
+        if not Gate.objects.filter(id=value).exists():
             raise serializers.ValidationError(f"Gate '{value}' does not exist.")
         return value
 

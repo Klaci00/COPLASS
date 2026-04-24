@@ -131,8 +131,7 @@ class GateEvent(models.Model):
         card = self.card.card_number if self.card else "N/A"
         return f"Gate {gate} - {card} at {self.timestamp}"
 class Gate(models.Model):
-    inside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_inside')
-    outside_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_outside')
-    gate_number = models.IntegerField()
+    current_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_current')
+    opposite_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='gates_oppposite')
     def __str__(self):
-        return f"Gate {self.gate_number} between {self.outside_zone.name} and {self.inside_zone.name}"
+        return f"Gate between {self.opposite_zone.name} and {self.current_zone.name}"
