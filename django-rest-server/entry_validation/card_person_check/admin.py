@@ -19,11 +19,14 @@ class AccessRightAdmin(admin.ModelAdmin):
     list_display = ('security_zone', 'start_date', 'end_date')
     search_fields = ('security_zone__name', 'start_date', 'end_date')
     list_filter = ('security_zone', 'start_date', 'end_date')
-class SercurityZoneAdmin(admin.ModelAdmin):
-    pass
+class SecurityZoneAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
 
 class GateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'current_zone', 'opposite_zone')
+    search_fields = ('id', 'current_zone__name', 'opposite_zone__name')
+    list_filter = ('id', 'current_zone', 'opposite_zone')
 
 class CardInline(admin.TabularInline):
     model = Card
@@ -52,7 +55,7 @@ class GateEventAdmin(admin.ModelAdmin):
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Card, CardAdmin)
 admin.site.register(GateEvent, GateEventAdmin)
-admin.site.register(SecurityZone, SercurityZoneAdmin)
+admin.site.register(SecurityZone, SecurityZoneAdmin)
 admin.site.register(Gate, GateAdmin)
 admin.site.register(AccessRight, AccessRightAdmin)
 admin.site.register(AccessRightRequest, AccessRightRequestAdmin)

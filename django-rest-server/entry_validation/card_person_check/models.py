@@ -127,7 +127,7 @@ class GateEvent(models.Model):
     from_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_from_zone', null=True, blank=True)
     to_zone = models.ForeignKey(SecurityZone, on_delete=models.CASCADE, related_name='events_to_zone', null=True, blank=True)
     def __str__(self):
-        gate = self.gate.gate_number if self.gate else "N/A"
+        gate = self.gate.id if self.gate else "N/A"
         card = self.card.card_number if self.card else "N/A"
         return f"Gate {gate} - {card} at {self.timestamp}"
 class Gate(models.Model):
