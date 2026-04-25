@@ -106,12 +106,11 @@ class AccessRightRequestListView(APIView):
             )
             deputy_coverage = models.Q(supervisor__in=absent_supervisors)
 
-            # Absent supervisors with no deputies — current user covers if they are their supervisor
             supervisors_with_no_deputies = Employee.objects.filter(
                 is_supervisor=True, on_the_clock=False, deputy=None, supervisor=user
             )
-            # ✅ Single exists() call stored in a variable
             has_absent_no_deputy = supervisors_with_no_deputies.exists()
+
             supervisor_coverage = (
                 models.Q(supervisor__in=supervisors_with_no_deputies)
                 if has_absent_no_deputy
@@ -122,21 +121,36 @@ class AccessRightRequestListView(APIView):
                 AccessRightRequest.objects.filter(
                     own_requests | deputy_coverage | supervisor_coverage
                 )
+                .select_related("employee", "supervisor", "security_zone")  # ✅ fix N+1
                 .distinct()
                 .order_by("-created_at")
             )
 
+            # ✅ Only annotate the deputy cases that actually exist
+            when_clauses = [When(supervisor__in=absent_supervisors, then=Value(True))]
+            if has_absent_no_deputy:
+                when_clauses.append(
+                    When(supervisor__in=supervisors_with_no_deputies, then=Value(True))
+                )
+
             requests = requests.annotate(
                 covered_as_deputy=Case(
-                    When(supervisor__in=absent_supervisors, then=Value(True)),
-                    When(supervisor__in=supervisors_with_no_deputies, then=Value(True)),
+                    *when_clauses,
                     default=Value(False),
                     output_field=BooleanField(),
                 )
             )
 
-        return Response(AccessRightRequestSerializer(requests, many=True).data)
+        else:
+            # ✅ Non-supervisors see only their own requests
+            requests = (
+                AccessRightRequest.objects.filter(employee=user)
+                .select_related("employee", "supervisor", "security_zone")
+                .order_by("-created_at")
+                .annotate(covered_as_deputy=Value(False, output_field=BooleanField()))
+            )
 
+        return Response(AccessRightRequestSerializer(requests, many=True).data)
 
 class AccessRightMyRequestListView(APIView):
     permission_classes = [IsAuthenticated]

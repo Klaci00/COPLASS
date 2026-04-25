@@ -121,7 +121,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ["id", "name", "is_staff", "is_supervisor", "department"]
+        fields = ["id", "hr_id", "name", "is_staff", "is_supervisor", "department"]
 
     def get_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"
@@ -133,7 +133,7 @@ class NewRegistrationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         queryset = Employee.objects.filter(is_active=False)
-        fields = ["id", "name"]
+        fields = ["id", "hr_id", "name"]
 
     def get_name(self, obj):
         return f"{obj.firstname} {obj.lastname}"

@@ -98,10 +98,11 @@ onMounted(async () => {
     securityZones.value = await zoneRes.json()
     employees.value = await empRes.json()
     supervisor.value = await supRes.json()
-
+    console.log(employees.value)
     if (!authStore.is_staff) {
       // If the user is not staff, filter the employees to only include themselves
-      employees.value = employees.value.filter((emp) => emp.id.toString() === authStore.hr_id)
+      employees.value = employees.value.filter((emp) => emp.hr_id.toString() === authStore.hr_id)
+      console.log(employees.value)  
     }
   } catch (error) {
     console.error('Failed to load dropdown data:', error)
