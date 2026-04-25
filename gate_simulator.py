@@ -41,8 +41,7 @@ def main():
         while True:
             employee.move()
     for e in employees:
-        Thread(target=simulate_employee_movement, args=(e,)).start()
-               
+        Thread(target=simulate_employee_movement, args=(e,)).start()          
 
 if __name__ == '__main__':
     main()

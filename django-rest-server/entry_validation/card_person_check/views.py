@@ -38,9 +38,17 @@ class CheckCardPersonView(APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        card = Card.objects.filter(card_number=data["card_number"]).first()
+        card = (
+            Card.objects.select_related("employee")
+            .filter(card_number=data["card_number"])
+            .first()
+        )
         employee = card.employee if card else None
-        gate_obj = Gate.objects.filter(id=data["gate"]).first()
+        gate_obj = (
+            Gate.objects.select_related("current_zone", "opposite_zone")
+            .filter(id=data["gate"])
+            .first()
+        )
         result = check_card_person(card, employee, gate_obj)
         if not result.allowed:
             denied_payload = {"control": True} if result.control else result.message
@@ -55,7 +63,7 @@ class CheckCardPersonView(APIView):
             allowed=result.allowed,
             warning=result.message if not result.allowed else None,
             from_zone=gate_obj.current_zone,
-            to_zone=gate_obj.opposite_zone
+            to_zone=gate_obj.opposite_zone,
         )
         gate_event.save()
 
