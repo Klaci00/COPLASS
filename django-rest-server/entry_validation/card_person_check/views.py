@@ -28,7 +28,7 @@ from .serializers import (
     MessageUpdateSerializer,
     NewRegistrationsSerializer,
 )
-from django.db import models
+from django.db import models, IntegrityError, transaction
 from django.db.models import Case, When, Value, BooleanField
 
 
@@ -83,11 +83,12 @@ class AccessRightRequestView(APIView):
         serializer = AccessRightRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            serializer.save()
+            with transaction.atomic():
+                serializer.save()
             return Response(
                 {"message": "Access right request created successfully."}, status=201
             )
-        except Exception as e:
+        except (IntegrityError, ValueError) as e:
             return Response({"error": str(e)}, status=400)
 
 

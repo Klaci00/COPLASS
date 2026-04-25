@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import serializers
 from .models import (
     Card,
@@ -62,6 +64,7 @@ class AccessRightRequestSerializer(serializers.ModelSerializer):
             "approved",
             "covered_as_deputy",
         ]
+        read_only_fields = ["id", "created_at", "approved", "covered_as_deputy"]
 
     def get_employee_name(self, obj):
         return (
@@ -79,6 +82,13 @@ class AccessRightRequestSerializer(serializers.ModelSerializer):
 
     def get_zone_name(self, obj):
         return obj.security_zone.name if obj.security_zone else None
+
+    def validate(self, data):
+        if data["end_date"] < data["start_date"]:
+            raise serializers.ValidationError("end_date must be after start_date.")
+        if data["start_date"] < date.today():
+            raise serializers.ValidationError("start_date cannot be in the past.")
+        return data
 
 
 # ──────────────────────────────────────────────
