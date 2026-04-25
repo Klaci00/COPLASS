@@ -15,6 +15,7 @@ yesterday = today - timedelta(days=1)
 
 # ─── Fixtures ─────────────────────────────────────────────────────────────────
 
+
 @pytest.fixture
 def api_client():
     return APIClient()
@@ -43,16 +44,21 @@ def setup_data(db):
     zone = SecurityZone.objects.create(name="Zone A")
     dept = Department.objects.create(name="IT")
     supervisor = Employee.objects.create(
-        firstname="Super", lastname="Visor",
-        hr_id=10001, department=dept,
-        current_zone=zone, is_supervisor=True,
+        firstname="Super",
+        lastname="Visor",
+        hr_id=10001,
+        department=dept,
+        current_zone=zone,
+        is_supervisor=True,
         date_of_birth="1990-01-01",
-
     )
     employee = Employee.objects.create(
-        firstname="John", lastname="Doe",
-        hr_id=10002, department=dept,
-        current_zone=zone, supervisor=supervisor,
+        firstname="John",
+        lastname="Doe",
+        hr_id=10002,
+        department=dept,
+        current_zone=zone,
+        supervisor=supervisor,
         date_of_birth="1990-01-01",
     )
     return {"employee": employee, "supervisor": supervisor, "zone": zone}
@@ -72,6 +78,7 @@ def valid_payload(data):
 
 # ─── 1. Authentication ─────────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 def test_unauthenticated_request_is_rejected(api_client, setup_data):
     """Unauthenticated requests must return 401, not 403 or 200."""
@@ -80,6 +87,7 @@ def test_unauthenticated_request_is_rejected(api_client, setup_data):
 
 
 # ─── 2. Happy Path ─────────────────────────────────────────────────────────────
+
 
 @pytest.mark.django_db
 def test_valid_request_returns_201(auth_client, setup_data):
@@ -91,6 +99,7 @@ def test_valid_request_returns_201(auth_client, setup_data):
 @pytest.mark.django_db
 def test_valid_request_creates_db_record(auth_client, setup_data):
     from card_person_check.models import AccessRightRequest
+
     assert AccessRightRequest.objects.count() == 0
     auth_client.post(URL, valid_payload(setup_data), format="json")
     assert AccessRightRequest.objects.count() == 1
@@ -99,6 +108,7 @@ def test_valid_request_creates_db_record(auth_client, setup_data):
 @pytest.mark.django_db
 def test_created_record_has_correct_fields(auth_client, setup_data):
     from card_person_check.models import AccessRightRequest
+
     auth_client.post(URL, valid_payload(setup_data), format="json")
     obj = AccessRightRequest.objects.first()
     assert obj.employee == setup_data["employee"]
@@ -108,13 +118,14 @@ def test_created_record_has_correct_fields(auth_client, setup_data):
 
 # ─── 3. Query Count ────────────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 def test_happy_path_query_count(auth_client, setup_data, django_assert_num_queries):
     """
     Expected queries (6 total):
-    1. SELECT employee     — DRF FK validation (full object fetch)
-    2. SELECT supervisor   — DRF FK validation (full object fetch)
-    3. SELECT securityzone — DRF FK validation (full object fetch)
+    1. SELECT id from employee     — lightweight FK validation (only pk) for employee field
+    2. SELECT id from supervisor   — lightweight FK validation (only pk) for supervisor field
+    3. SELECT id from securityzone — lightweight FK validation (only pk) for security_zone field
     4. SAVEPOINT           — Django test transaction savepoint
     5. INSERT              — accessrightrequest record
     6. RELEASE SAVEPOINT   — savepoint cleanup
@@ -124,17 +135,22 @@ def test_happy_path_query_count(auth_client, setup_data, django_assert_num_queri
 
 
 @pytest.mark.django_db
-def test_query_count_stable_with_more_data(auth_client, setup_data, django_assert_num_queries):
+def test_query_count_stable_with_more_data(
+    auth_client, setup_data, django_assert_num_queries
+):
     """Query count must not grow as more employees/zones are added."""
     from card_person_check.models import Employee, SecurityZone, Department
+
     dept = Department.objects.first()
     zone = SecurityZone.objects.first()
     for i in range(20):
         Employee.objects.create(
-            firstname=f"Extra{i}", lastname="User",
-            hr_id=20000 + i, department=dept, current_zone=zone,
+            firstname=f"Extra{i}",
+            lastname="User",
+            hr_id=20000 + i,
+            department=dept,
+            current_zone=zone,
             date_of_birth="1990-01-01",
-
         )
 
     with django_assert_num_queries(6):
@@ -142,6 +158,7 @@ def test_query_count_stable_with_more_data(auth_client, setup_data, django_asser
 
 
 # ─── 4. Validation Errors ──────────────────────────────────────────────────────
+
 
 @pytest.mark.django_db
 def test_missing_employee_returns_400(auth_client, setup_data):
@@ -173,6 +190,7 @@ def test_nonexistent_employee_returns_400(auth_client, setup_data):
 # These tests currently EXPOSE BUGS — they will fail until the serializer
 # validate() method is added as described in the review above.
 
+
 @pytest.mark.django_db
 def test_end_date_before_start_date_returns_400(auth_client, setup_data):
     """
@@ -200,6 +218,7 @@ def test_start_date_in_past_returns_400(auth_client, setup_data):
 
 # ─── 6. Security ───────────────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 def test_cannot_self_approve_on_creation(auth_client, setup_data):
     """
@@ -211,15 +230,18 @@ def test_cannot_self_approve_on_creation(auth_client, setup_data):
     auth_client.post(URL, payload, format="json")
 
     from card_person_check.models import AccessRightRequest
+
     obj = AccessRightRequest.objects.first()
     assert obj.approved is False, "approved must always be False on creation"
 
 
 # ─── 7. Response Time ──────────────────────────────────────────────────────────
 
+
 @pytest.mark.django_db
 def test_response_time(auth_client, setup_data):
     import time
+
     payload = valid_payload(setup_data)
     start = time.perf_counter()
     auth_client.post(URL, payload, format="json")

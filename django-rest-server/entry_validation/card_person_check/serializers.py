@@ -2,7 +2,6 @@ from datetime import date
 
 from rest_framework import serializers
 from .models import (
-    Card,
     Gate,
     AccessRightRequest,
     SecurityZone,
@@ -43,6 +42,16 @@ class CheckCardPersonSerializer(serializers.Serializer):
 
 
 class AccessRightRequestSerializer(serializers.ModelSerializer):
+    # Override FK fields to fetch only 'pk' during validation
+    # instead of SELECT * (all columns)
+    employee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.only("pk"))
+    supervisor = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.only("pk").filter(is_supervisor=True),
+    )
+    security_zone = serializers.PrimaryKeyRelatedField(
+        queryset=SecurityZone.objects.only("pk")
+    )
+
     employee_name = serializers.SerializerMethodField()
     supervisor_name = serializers.SerializerMethodField()
     zone_name = serializers.SerializerMethodField()
