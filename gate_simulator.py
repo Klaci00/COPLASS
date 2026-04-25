@@ -1,5 +1,6 @@
 import time
 from gate import Gate, Employee, Zone
+from threading import Thread
 
 SERVER_URL = 'http://127.0.0.1:8000/api/check_card_person/'
 
@@ -28,13 +29,20 @@ def main():
     from_lobby_to_secret.opposite_zone = secret
     from_secret_to_lobby.current_zone = secret
     from_secret_to_lobby.opposite_zone = lobby
-
+    employees = []
+    for i in range(1,101):
+        e = Employee(card_number=int(f'{i}1'), zone=outside)
+        employees.append(e)
+    '''        
     e1 = Employee(11, outside)
     e1.zone = outside
-    while True:
-        print(f'Employee is in {e1.zone.name}.')
-        e1.move()
-        time.sleep(5)
+    '''
+    def simulate_employee_movement(employee):
+        while True:
+            employee.move()
+    for e in employees:
+        Thread(target=simulate_employee_movement, args=(e,)).start()
+               
 
 if __name__ == '__main__':
     main()

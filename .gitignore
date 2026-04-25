@@ -132,3 +132,4 @@ Thumbs.db
 django-rest-server/entry_validation/db.sqlite3
 django-rest-server/entry_validation/easy_init.py
 start.py
+django-rest-server/entry_validation/batch_add_employees.py

@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import sleep
 import requests
 import random
 import logging
@@ -40,3 +41,5 @@ class Employee:
         print(f'Employee has decided to go through {gate.name}.')
         if gate.check_card(self.card_number):
             self.zone = gate.opposite_zone
+            print(f'Employee has moved to {self.zone.name}.')   
+            sleep(random.uniform(1, 5))  # Simulate time taken to move through the gate

@@ -105,7 +105,8 @@ class Card(models.Model):
     lock_until = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        self.card_number = self.card_id + str(self.employee.hr_id)
+        card_count = Card.objects.filter(employee=self.employee).count() + 1
+        self.card_number = str(self.employee.hr_id) + str(card_count)
         self.related_hr_id = str(self.employee.hr_id)
         super().save(*args, **kwargs)
 
