@@ -157,11 +157,15 @@ class AccessRightMyRequestListView(APIView):
 
     def get(self, request):
         user = request.user
-        requests = AccessRightRequest.objects.filter(employee=user).order_by(
-            "-created_at"
+        requests = (
+            AccessRightRequest.objects.filter(employee=user)
+            .select_related("employee", "supervisor", "security_zone")  # ✅ fix N+1
+            .order_by("-created_at")
+            .annotate(                                                   # ✅ explicit, not accidental
+                covered_as_deputy=Value(False, output_field=BooleanField())
+            )
         )
         return Response(AccessRightRequestSerializer(requests, many=True).data)
-
 
 class ApproveAccessRightRequestView(APIView):
     permission_classes = [IsAuthenticated]
